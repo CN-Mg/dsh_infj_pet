@@ -54,12 +54,15 @@ This is an **in-window** companion, not an operating-system desktop overlay.
 
 ### 1. From npm
 
-```
+Package page: [dsh-plugin-infj-pet on npm](https://www.npmjs.com/package/dsh-plugin-infj-pet).
+
+Enter the package name in DSH's plugin installation page (sidebar → **Plugins**):
+
+```text
 dsh-plugin-infj-pet
 ```
 
-Enter that name in DSH's plugin installation page (sidebar → **Plugins**). To
-pin this release, use `dsh-plugin-infj-pet@1.0.0`.
+To pin this release, use `dsh-plugin-infj-pet@1.0.1`.
 
 ### 2. From GitHub
 
@@ -70,7 +73,7 @@ github:CN-Mg/dsh_infj_pet
 Or with a pinned tag:
 
 ```
-github:CN-Mg/dsh_infj_pet#v1.0.0
+github:CN-Mg/dsh_infj_pet#v1.0.1
 ```
 
 The committed source already contains the built client bundle, so a Git install
