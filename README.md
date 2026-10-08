@@ -139,7 +139,7 @@ than throwing into your session.
 Requires Node.js 20 or newer. There are no dependencies to install.
 
 ```sh
-npm run verify      # structural checks plus 34 behavioural tests
+npm run verify      # structural checks plus 35 behavioural tests
 npm test            # the test suite alone
 npm run check       # manifest, patch, locale, artwork-drift and asset checks
 npm run preview     # regenerate preview.html from the shipped assets
