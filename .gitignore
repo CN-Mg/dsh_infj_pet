@@ -1,0 +1,15 @@
+# Build output and local artefacts
+artifacts/
+*.tgz
+node_modules/
+.pnpm-store/
+
+# Generated preview (rebuild with: npm run preview)
+preview.html
+
+# Editor and OS noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

@@ -1,0 +1,4 @@
+# Add only our own plugin row. No official DSH component is replaced.
+- insert:
+    - id: infj-pet
+      name: dsh-plugin-infj-pet

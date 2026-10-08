@@ -1,0 +1,11 @@
+# Keep every text artefact byte-stable across platforms.
+#
+# The artwork region in lib/client.js is compared byte-for-byte against the
+# region generated from lib/art.js, so an accidental CRLF conversion on one
+# side would show up as drift. Normalising in the repository avoids that.
+* text=auto eol=lf
+
+# Binary assets must never be touched.
+*.png binary
+*.woff2 binary
+*.tgz binary
