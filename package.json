@@ -1,12 +1,14 @@
 {
   "name": "dsh-plugin-infj-pet",
-  "version": "1.0.0",
-  "description": "INFJ Sage — a low-poly Advocate/Counselor companion that lives in your DSH window and reflects what your agents are doing.",
+  "version": "1.0.1",
+  "description": "INFJ Sage — a pixel-art Advocate/Counselor companion that lives in your DSH window and reflects what your agents are doing.",
   "keywords": [
     "dsh",
     "dsh-plugin",
     "deepseek-harness",
     "desktop-pet",
+    "pixel-art",
+    "sprite",
     "infj",
     "mbti",
     "companion"
@@ -26,7 +28,9 @@
   },
   "files": [
     "lib",
+    "!lib/src",
     "assets",
+    "!assets/sage.png.b64",
     "locale",
     "cordis.patch.yml",
     "README.md",
@@ -34,7 +38,8 @@
     "LICENSE",
     "ASSETS-LICENSE.md",
     "CHANGELOG.md"
-  ],  "scripts": {
+  ],
+  "scripts": {
     "check": "node tools/check.mjs",
     "test": "node --test tests/",
     "verify": "node tools/check.mjs && node --test tests/",
@@ -42,7 +47,8 @@
     "icons": "node tools/build-icons.mjs",
     "bundle": "node tools/build-bundle.mjs",
     "build": "node tools/build-sage-index.mjs && node tools/build-icons.mjs && node tools/build-bundle.mjs && node tools/build-preview.mjs",
-    "preview": "node tools/build-preview.mjs"
+    "preview": "node tools/build-preview.mjs",
+    "prepublishOnly": "node tools/check.mjs && node --test tests/"
   },
   "engines": {
     "node": ">=20"

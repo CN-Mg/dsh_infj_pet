@@ -3,55 +3,39 @@
 All notable changes to this plugin are documented here. This project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 1.0.1
 
-**Artwork replaced**
+First published release. `1.0.0` was consumed by npm's staged-publish pipeline —
+the upload was accepted but never finalised, and the registry then refused to
+reuse the version — so the release moved to 1.0.1 with no code change.
 
-- The character is now **Sage**, the pixel-art INFJ pet produced with the
-  built-in image generator (`Sage/`). The hand-drawn SVG sage is gone.
-- Nine animations and sixteen head poses come from one 1536×2288 sprite sheet,
-  embedded in the bundle so the plugin makes no network request at all.
+**Artwork**
+
+- The character is **Sage**, a pixel-art INFJ pet generated with the built-in
+  image generator. One 1536×2288 sprite sheet, an 8×11 grid of 192×208 cells:
+  nine animations and sixteen head poses, embedded in the bundle so the plugin
+  makes no network request at all.
 - The sheet's SHA-256 is checked against the value recorded in its validation
   report, so the plugin cannot ship artwork that differs from what was validated.
 
-**New behaviour**
+**Behaviour**
 
 - **Keeps pace** — after twenty seconds of uninterrupted work the sage switches
-  from thinking to a walking loop, then celebrates or slumps when the run ends.
+  from thinking to a walking loop, then leaps or slumps when the run ends.
 - **Idle glances** — while resting, it looks around using the drawn head poses.
-- Display sizes are now exact integer multiples of the sprite pixels (1×, 2×, 3×),
-  which is what keeps pixel art crisp; the old fractional sizes are gone.
-
-**Build**
-
-- `lib/client.js` is generated from readable regions in `lib/src/`, so gaps
-  between source and bundle show up in review rather than in a diff of a 2 MB
-  file.
-- `tools/png.mjs` decodes the sheet without any dependency, and the broken
-  `--sprite` build path was removed.
-- `npm run check` now verifies the sheet hash, the frame boundaries, the gaze
-  coverage, the generated icon, and that the bundle matches its sources.
-- `npm run build` regenerates the index, icon, contact sheet, bundle and offline
-  preview in one pass.
-
-## 1.0.0
-
-First release of the plugin.
-
-**The companion**
-
 - Six semantic states — 静观 resting, 洞察 working, 共情 waiting, 笃定
   celebrating, 充电 sleeping, 受挫 error — each mapped to one facet of the INFJ
   description on the reference card.
-- Per-pose animation, disabled by `prefers-reduced-motion` or by the motion
-  setting.
+- Display sizes are exact integer multiples of the sprite pixels (1×, 2×, 3×),
+  which is what keeps pixel art crisp.
+- Animation follows `prefers-reduced-motion` and the motion setting.
 
 **Interaction**
 
 - Click to hear a line in character; drag to reposition with edge snapping and a
   remembered position.
-- Right-click settings: session scope, size, nap delay, palette, motion,
-  auto-tips, reset position, tuck away, and a trait explainer.
+- Right-click settings: session scope, size, nap delay, palette, motion, idle
+  glances, auto-tips, reset position, tuck away, and a trait explainer.
 - Bilingual (English / 简体中文), following the DSH language until you choose one.
 - Tuck away collapses the sage to a corner restore button.
 
@@ -67,4 +51,11 @@ First release of the plugin.
 
 - Zero runtime dependencies; the client bundle is committed, so a Git install
   needs no build step.
-- Structural checks and a behavioural test suite ship with the package.
+- 19 files, 3.4 MB packed, 4.0 MB unpacked. `lib/src/` and `assets/sage.png.b64`
+  are build inputs and stay out of the tarball; the bundle already embeds the
+  sheet.
+- `prepublishOnly` runs the structural checks and the test suite, so a broken
+  build cannot be published.
+- `lib/client.js` is generated from readable regions in `lib/src/`, and both the
+  checker and the test suite rebuild it, so the shipped bundle can never drift
+  from its sources.
