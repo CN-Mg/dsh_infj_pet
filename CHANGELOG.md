@@ -3,6 +3,34 @@
 All notable changes to this plugin are documented here. This project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.3
+
+**The sage no longer paces about**
+
+- Working is a reading now. While any session is busy the sage sits with its open
+  book and turns the pages; it does not switch to a walking loop after a while,
+  and the twenty-second timer that used to trigger one is gone from the machine
+  entirely.
+- Running belongs to being carried. Drag the sage and it runs in the direction
+  you take it, facing left or right, and it turns around at the screen edge so it
+  never appears to run out of the window it is pinned to. Letting go stops it at
+  once.
+- `run-left` finally has a job: it is the inward-facing run when the sage is
+  pinned against a wall.
+
+**Drag robustness**
+
+Six bugs surfaced in the drag path while testing this, all of them fixed:
+
+- A drag origin that came back `null` from an unmeasured node poisoned every
+  distance after it; the origin is now validated and latched from the first real
+  position.
+- The drag anchor did not advance, so a reversal was measured from the original
+  grab and could not be expressed until the pointer returned past it.
+- The screen-edge turnaround tested the clamped result instead of the requested
+  distance, so pulling away from a wall flipped the facing the wrong way.
+- A pointer press now clears a stale facing, and letting go always stops the run.
+
 ## 1.0.2
 
 **The reading revision**

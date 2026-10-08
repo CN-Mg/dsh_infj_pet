@@ -111,6 +111,11 @@ export class ComponentHarness {
     this.pending = [];
     const element = { __el: true, type: this.Component, props, children: [] };
     const tree = this.renderElement(element, {});
+    // React attaches host nodes to refs during commit, before effects run. A tree
+    // walker has no commit phase, so refs would stay null and any prop reading
+    // `ref.current` would see nothing. Attaching here keeps the component under
+    // test on the same path it takes in a browser.
+    this.#attachRefs(tree);
     const queued = this.pending;
     this.pending = [];
     queued.forEach((job) => {
@@ -120,6 +125,23 @@ export class ComponentHarness {
       this.effects[job.index] = { deps: job.deps, effect: job.effect, cleanup: typeof cleanup === 'function' ? cleanup : undefined };
     });
     return tree;
+  }
+
+  /** Gives every element with a ref object a stand-in host node. */
+  #attachRefs(tree) {
+    const visit = (node) => {
+      if (!node || typeof node !== 'object') return;
+      if (Array.isArray(node)) {
+        node.forEach(visit);
+        return;
+      }
+      const ref = node.props?.ref;
+      if (ref && typeof ref === 'object' && 'current' in ref) {
+        ref.current = createHostNode(node.type, node.props?.style ?? {});
+      }
+      (node.children ?? []).forEach(visit);
+    };
+    visit(tree);
   }
 
   /** Renders repeatedly until state settles, so effect-driven transitions show. */
@@ -157,6 +179,40 @@ export class ComponentHarness {
       children: node.children.map((child) => this.renderElement(child, props))
     };
   }
+}
+
+/**
+ * A stand-in host node for a ref, sized and positioned from the style the plugin
+ * gave the element, so `getBoundingClientRect` answers something true.
+ */
+function createHostNode(type, style) {
+  const width = Number.parseFloat(style?.width) || 0;
+  const height = Number.parseFloat(style?.height) || 0;
+  const left = Number.parseFloat(style?.left);
+  const top = Number.parseFloat(style?.top);
+  const viewportWidth = 1280;
+  const viewportHeight = 800;
+  const x = Number.isFinite(left) ? left : viewportWidth - width - 24;
+  const y = Number.isFinite(top) ? top : viewportHeight - height - 24;
+  const classes = new Set(String(style?.className ?? '').split(/\s+/).filter(Boolean));
+  return {
+    tagName: String(type).toUpperCase(),
+    style: style ?? {},
+    offsetWidth: width,
+    classList: {
+      add: (name) => classes.add(name),
+      remove: (name) => classes.delete(name),
+      contains: (name) => classes.has(name)
+    },
+    getBoundingClientRect: () => ({
+      left: x,
+      top: y,
+      width,
+      height,
+      right: x + width,
+      bottom: y + height
+    })
+  };
 }
 
 /** Depth-first walk over a rendered tree. */
@@ -215,7 +271,17 @@ export function loadBundle(options = {}) {
   const source = readFileSync(join(root, 'lib', 'client.js'), 'utf8');
   const registrations = [];
 
-  const makeElement = (tag) => ({
+/**
+ * A DOM element stand-in that reports a rectangle derived from the position the
+ * plugin gave it.
+ *
+ * The plugin reads its own rect to decide where a drag starts. A fixed stub would
+ * make the first drag begin from a wrong origin and quietly break any assertion
+ * about direction, so this tracks `left`/`top` and follows the viewport default
+ * when the plugin has not positioned the element yet.
+ */
+function makeElement(tag, viewport = { width: 1280, height: 800 }) {
+  const element = {
     tagName: String(tag).toUpperCase(),
     children: [],
     attributes: {},
@@ -242,9 +308,19 @@ export function loadBundle(options = {}) {
     addEventListener() {},
     removeEventListener() {},
     getBoundingClientRect() {
-      return { left: 40, top: 40, width: 148, height: 148, right: 188, bottom: 188 };
+      const width = Number.parseFloat(this.style.width) || 0;
+      const height = Number.parseFloat(this.style.height) || 0;
+      // An unpositioned companion hangs 24px from the corner, which is what the
+      // plugin's own stylesheet does.
+      const left = Number.parseFloat(this.style.left);
+      const top = Number.parseFloat(this.style.top);
+      const x = Number.isFinite(left) ? left : viewport.width - width - 24;
+      const y = Number.isFinite(top) ? top : viewport.height - height - 24;
+      return { left: x, top: y, width, height, right: x + width, bottom: y + height };
     }
-  });
+  };
+  return element;
+}
 
   const document = {
     head: makeElement('head'),

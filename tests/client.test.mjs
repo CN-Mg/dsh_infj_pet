@@ -443,38 +443,93 @@ test('a host language change relabels a companion that never picked one', () => 
   assert.match(rootElement(rendered.tree).props['aria-label'], /INFJ 贤者/);
 });
 
-test('a long uninterrupted run switches the sage to the walking loop', () => {
-  // Two clocks matter here. The machine measures a haul with Date.now, which a
-  // VM sandbox supplies from its own intrinsics, so the clock is injected. And
-  // the machine only re-evaluates when the projection changes or its own poll
-  // fires, so the test drives that poll too.
+test('working is a reading, and it stays a reading however long the work lasts', () => {
   const clock = { now: 1_000_000 };
   const stores = createStores();
   stores.set({ running: ['a'] });
   const rendered = mount(stores.props(), { now: () => clock.now });
-  assert.equal(rootElement(rendered.tree).props['data-sprite'], 'pondering');
-
-  function advance(ms) {
-    clock.now += ms;
-    rendered.bundle.tick(1);
-    rerender(rendered);
-  }
-
-  // Ten seconds in, it is still an ordinary working session.
-  advance(10_000);
   assert.equal(stateOf(rendered), 'working');
-  assert.equal(rootElement(rendered.tree).props['data-sprite'], 'pondering');
+  assert.equal(rootElement(rendered.tree).props['data-sprite'], 'reading');
 
-  // Past the delay it becomes a haul and the sage walks alongside it.
-  advance(12_000);
-  assert.equal(stateOf(rendered), 'running');
-  assert.equal(rootElement(rendered.tree).props['data-sprite'], 'run-right');
+  // A long session must not turn into pacing about. Time only moves the clock.
+  clock.now += 60_000;
+  rendered.bundle.tick(1);
+  rerender(rendered);
+  assert.equal(stateOf(rendered), 'working');
+  assert.equal(rootElement(rendered.tree).props['data-sprite'], 'reading');
 
-  // Once the work stops, the run is over and the sage sits down to read.
+  // Once the work stops, the sage is already sitting down and keeps reading.
   stores.set({ running: [] });
-  advance(100);
+  clock.now += 100;
+  rendered.bundle.tick(1);
+  rerender(rendered);
   assert.equal(stateOf(rendered), 'reading');
   assert.equal(rootElement(rendered.tree).props['data-sprite'], 'reading');
+});
+
+test('dragging the sage makes it run, facing the way it is carried', () => {
+  const stores = createStores();
+  const props = stores.props();
+  const rendered = mount(props);
+  const root = rootElement(rendered.tree);
+  assert.equal(root.props['data-sprite'], 'idle', 'a still sage is not running');
+
+  // The companion starts pinned in the bottom-right corner, so the probe moves
+  // left first: pulling it inward is what gives the drag somewhere to go.
+  const pointerId = 3;
+  root.props.onPointerDown({
+    button: 0,
+    pointerId,
+    clientX: 1000,
+    clientY: 700,
+    currentTarget: { setPointerCapture() {} }
+  });
+
+  root.props.onPointerMove({ pointerId, clientX: 700, clientY: 700 });
+  let moved = rootElement(rerender(rendered));
+  assert.equal(moved.props['data-sprite'], 'run-left', 'carried inward means facing left');
+  assert.equal(moved.props['data-state'], 'carried');
+
+  // Carried back the other way, still well inside the window, so the facing
+  // reverses rather than hitting a wall.
+  root.props.onPointerMove({ pointerId, clientX: 900, clientY: 700 });
+  moved = rootElement(rerender(rendered));
+  assert.equal(moved.props['data-sprite'], 'run-right', 'carried outward means facing right');
+
+  // Letting go stops the running immediately.
+  root.props.onPointerUp({
+    pointerId,
+    clientX: 900,
+    clientY: 700,
+    currentTarget: { releasePointerCapture() {} }
+  });
+  moved = rootElement(rerender(rendered));
+  assert.equal(moved.props['data-sprite'], 'idle');
+  assert.equal(moved.props['data-state'], 'resting');
+});
+
+test('running into a screen edge turns the sage around', () => {
+  const stores = createStores();
+  const props = stores.props();
+  const rendered = mount(props);
+  const root = rootElement(rendered.tree);
+
+  root.props.onPointerDown({
+    button: 0,
+    pointerId: 4,
+    clientX: 100,
+    clientY: 100,
+    currentTarget: { setPointerCapture() {} }
+  });
+  // The harness viewport is 1280 wide and the box is about 274, so this pins the
+  // sage to the right edge.
+  root.props.onPointerMove({ pointerId: 4, clientX: 5000, clientY: 100 });
+  const moved = rootElement(rerender(rendered));
+  assert.equal(
+    moved.props['data-sprite'],
+    'run-left',
+    'pinned to the right edge, the sage should face back into the window'
+  );
 });
 
 test('the frame ticker advances within a state and stops while asleep', () => {
@@ -533,7 +588,8 @@ test('the drawn frame changes as the session state changes', () => {
   stores.set({ running: ['a'] });
   const busy = mount(stores.props());
   const busyPosition = spriteOf(busy.tree).props.style.backgroundPosition;
-  assert.equal(rootElement(busy.tree).props['data-sprite'], 'pondering');
+  // Work reads; the running rows belong to being carried.
+  assert.equal(rootElement(busy.tree).props['data-sprite'], 'reading');
   assert.notEqual(busyPosition, idlePosition, 'a different state should draw a different cell');
 });
 

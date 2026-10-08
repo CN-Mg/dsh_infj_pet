@@ -2,6 +2,8 @@
 
 **A pixel-art INFJ companion that lives inside your DeepSeek Harness window.**
 
+**Just here to accompany Qiangwei.**
+
 一只住在 DSH 窗口里的 INFJ 贤者：陪你专注、等你决定，也陪你安静地打个盹。
 
 <p align="center">
@@ -9,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/preview.png" width="820" alt="Every animation: idle, run-right, run-left, wave, jump, failed, waiting, working, pondering">
+  <img src="assets/preview.png" width="820" alt="Every animation: idle, run-right, run-left, wave, reading, failed, waiting, working, pondering">
 </p>
 
 The sage is not a progress bar. It reads what your agents are already doing —
@@ -18,6 +20,9 @@ character. Six semantic states, drawn from a nine-animation sprite sheet where
 each pose expresses a different facet of the INFJ description on the reference
 card.
 
+While you work it sits and reads, turning its pages. It only runs when you pick
+it up.
+
 ---
 
 ## What it does
@@ -25,23 +30,25 @@ card.
 | Pose | When it appears | Trait it expresses |
 |---|---|---|
 | 静观 Observing | Nothing is running | 独处即充电 — recharged alone |
-| 洞察 Insight | At least one session is working | 先看模式，再看任务 — patterns before tasks |
-| 陪伴 Keeping pace | Work has run for 20s without a break | 理想主义的续航 — idealist stamina |
+| 阅读 Reading | At least one session is working, or a watched turn just finished | 先看模式，再看任务 — patterns before tasks |
 | 共情 Empathy | A session is waiting on your answer | 先接住情绪 — feelings first |
-| 阅读 Reading | A turn the sage watched just finished | 低调地笃定 — quiet conviction |
 | 充电 Recharging | Idle past the nap delay | 独处即充电 — the quiet half |
 | 受挫 Setback | A turn ended in an error | 过载时向内自责 — overload turns inward |
+| 带我去哪儿 Carried | While you are dragging it | 理想主义的续航 — carried, not chasing |
 
 Around that core:
 
 - **Click** the sage and it says something in character.
 - **Drag** it anywhere; it snaps to the edge and remembers where you left it.
+- **It reads while you work** — an open book, eyes following the page, a quiet
+  page turn. It never paces about on its own.
+- **It runs only when carried** — pick it up and it runs in the direction you
+  take it, turning around at the screen edge so it never looks like it is
+  running out of the window.
 - **Right-click** for settings: session scope, size, nap delay, palette, motion,
   idle glances, auto-tips, position reset, tuck away, and a trait panel.
 - **Idle glances** — while resting, the sage looks around using the sheet's
   sixteen drawn head poses.
-- **Keeps pace** — after twenty seconds of uninterrupted work it starts walking,
-  and when the run ends it sits down with an open book.
 - Follows DSH's language, light/dark theme, and reduce-motion preference.
 - No build step to install, no runtime dependencies, no network calls, no model
   calls.
