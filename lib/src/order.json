@@ -1,0 +1,17 @@
+[
+  "header",
+  "constants",
+  "helpers",
+  "statePlan",
+  "artwork",
+  "sprite",
+  "behaviour",
+  "styles",
+  "fallback",
+  "preferences",
+  "componentHeader",
+  "companionHead",
+  "companionBody",
+  "panel",
+  "plugin"
+]

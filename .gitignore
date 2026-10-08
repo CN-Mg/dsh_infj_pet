@@ -7,9 +7,17 @@ node_modules/
 # Generated preview (rebuild with: npm run preview)
 preview.html
 
+# The artwork generation workspace stays local: ~130 MB of frames, QA renders and
+# a vendored ffmpeg, none of which the plugin needs. The parts the build and the
+# licence actually depend on are checked in under assets/provenance/.
+Sage/
+!Sage/README.md
+
 # Editor and OS noise
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
 *.log
+__pycache__/
+*.pyc

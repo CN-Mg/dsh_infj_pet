@@ -3,19 +3,48 @@
 All notable changes to this plugin are documented here. This project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+**Artwork replaced**
+
+- The character is now **Sage**, the pixel-art INFJ pet produced with the
+  built-in image generator (`Sage/`). The hand-drawn SVG sage is gone.
+- Nine animations and sixteen head poses come from one 1536×2288 sprite sheet,
+  embedded in the bundle so the plugin makes no network request at all.
+- The sheet's SHA-256 is checked against the value recorded in its validation
+  report, so the plugin cannot ship artwork that differs from what was validated.
+
+**New behaviour**
+
+- **Keeps pace** — after twenty seconds of uninterrupted work the sage switches
+  from thinking to a walking loop, then celebrates or slumps when the run ends.
+- **Idle glances** — while resting, it looks around using the drawn head poses.
+- Display sizes are now exact integer multiples of the sprite pixels (1×, 2×, 3×),
+  which is what keeps pixel art crisp; the old fractional sizes are gone.
+
+**Build**
+
+- `lib/client.js` is generated from readable regions in `lib/src/`, so gaps
+  between source and bundle show up in review rather than in a diff of a 2 MB
+  file.
+- `tools/png.mjs` decodes the sheet without any dependency, and the broken
+  `--sprite` build path was removed.
+- `npm run check` now verifies the sheet hash, the frame boundaries, the gaze
+  coverage, the generated icon, and that the bundle matches its sources.
+- `npm run build` regenerates the index, icon, contact sheet, bundle and offline
+  preview in one pass.
+
 ## 1.0.0
 
-First release.
+First release of the plugin.
 
 **The companion**
 
-- Six poses — 静观 resting, 洞察 working, 共情 waiting, 笃定 celebrating, 充电
-  sleeping, 受挫 error — each mapped to one facet of the INFJ description on the
-  reference card.
-- A low-poly sage drawn as flat SVG: green robe, teal sash, white hair, headband,
-  long beard, and a forked staff.
-- Per-pose CSS animation (head tilt, beard sway, staff swing, blink) that is
-  disabled by `prefers-reduced-motion` or by the motion setting.
+- Six semantic states — 静观 resting, 洞察 working, 共情 waiting, 笃定
+  celebrating, 充电 sleeping, 受挫 error — each mapped to one facet of the INFJ
+  description on the reference card.
+- Per-pose animation, disabled by `prefers-reduced-motion` or by the motion
+  setting.
 
 **Interaction**
 
@@ -38,5 +67,4 @@ First release.
 
 - Zero runtime dependencies; the client bundle is committed, so a Git install
   needs no build step.
-- `npm run check` enforces manifest, patch, locale, asset, and artwork-drift
-  invariants; `npm test` covers behaviour with a small React harness.
+- Structural checks and a behavioural test suite ship with the package.

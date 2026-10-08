@@ -1,17 +1,22 @@
 # INFJ Sage · 贤者桌宠
 
-**A low-poly INFJ companion that lives inside your DeepSeek Harness window.**
+**A pixel-art INFJ companion that lives inside your DeepSeek Harness window.**
 
 一只住在 DSH 窗口里的 INFJ 贤者：陪你专注、等你决定，也陪你安静地打个盹。
 
 <p align="center">
-  <img src="assets/icon.svg" width="120" alt="INFJ Sage icon">
+  <img src="assets/icon.png" width="120" alt="INFJ Sage icon">
+</p>
+
+<p align="center">
+  <img src="assets/preview.png" width="820" alt="Every animation: idle, run-right, run-left, wave, jump, failed, waiting, working, pondering">
 </p>
 
 The sage is not a progress bar. It reads what your agents are already doing —
 working, waiting on you, resting — and answers with a small, quiet reaction in
-character. Six poses, each one expressing a different facet of the INFJ
-description on the reference card.
+character. Six semantic states, drawn from a nine-animation sprite sheet where
+each pose expresses a different facet of the INFJ description on the reference
+card.
 
 ---
 
@@ -21,9 +26,10 @@ description on the reference card.
 |---|---|---|
 | 静观 Observing | Nothing is running | 独处即充电 — recharged alone |
 | 洞察 Insight | At least one session is working | 先看模式，再看任务 — patterns before tasks |
+| 陪伴 Keeping pace | Work has run for 20s without a break | 理想主义的续航 — idealist stamina |
 | 共情 Empathy | A session is waiting on your answer | 先接住情绪 — feelings first |
 | 笃定 Resolve | A turn the sage watched just finished | 低调地笃定 — quiet conviction |
-| 充电 Recharging | Idle past the nap delay | 理想主义的续航 — idealist stamina |
+| 充电 Recharging | Idle past the nap delay | 独处即充电 — the quiet half |
 | 受挫 Setback | A turn ended in an error | 过载时向内自责 — overload turns inward |
 
 Around that core:
@@ -31,10 +37,14 @@ Around that core:
 - **Click** the sage and it says something in character.
 - **Drag** it anywhere; it snaps to the edge and remembers where you left it.
 - **Right-click** for settings: session scope, size, nap delay, palette, motion,
-  auto-tips, and a panel explaining the six traits.
-- **Tuck away** hides the sage down to a corner restore button.
+  idle glances, auto-tips, position reset, tuck away, and a trait panel.
+- **Idle glances** — while resting, the sage looks around using the sheet's
+  sixteen drawn head poses.
+- **Keeps pace** — after twenty seconds of uninterrupted work it starts walking,
+  then celebrates or slumps when the run ends.
 - Follows DSH's language, light/dark theme, and reduce-motion preference.
-- No build step, no runtime dependencies, no network calls, no model calls.
+- No build step to install, no runtime dependencies, no network calls, no model
+  calls.
 
 This is an **in-window** companion, not an operating-system desktop overlay.
 
@@ -54,13 +64,13 @@ pin this release, use `dsh-plugin-infj-pet@1.0.0`.
 ### 2. From GitHub
 
 ```
-github:CN-Mg/dsh-plugin-infj-pet
+github:CN-Mg/dsh_infj_pet
 ```
 
 Or with a pinned tag:
 
 ```
-github:CN-Mg/dsh-plugin-infj-pet#v1.0.0
+github:CN-Mg/dsh_infj_pet#v1.0.0
 ```
 
 The committed source already contains the built client bundle, so a Git install
@@ -89,13 +99,15 @@ To remove it: disable the row on the Plugins page, then uninstall the package.
 - **Keyboard** — `Tab` to the sage, `Enter`/`Space` to poke, `Esc` to close.
 - **Session scope** — *All sessions* counts ordinary sessions on the current
   Host; *This session* follows only the one you are looking at. Child (subagent)
-  sessions are never counted as your sessions, so a delegated burst does not
-  look like your own work.
+  sessions are never counted as your sessions, so a delegated burst does not look
+  like your own work.
 - **Nap delay** — how long the sage stays quiet before it dozes off.
+- **Size** — 1×, 2×, or 3× the sprite's own pixels. Every size is a whole-number
+  multiple, because pixel art resampled at a fractional scale turns to mush.
 
 ### Completion is never guessed
 
-The celebratory pose fires only on a **falling edge of work the sage actually
+The celebratory leap fires only on a **falling edge of work the sage actually
 watched running**. A page that loads into an already-idle Host, a dropped
 connection, or a session that simply disappears never produces a celebration.
 Cancelled and failed turns are not successes.
@@ -109,6 +121,8 @@ Cancelled and failed turns are not successes.
 - Makes **no model calls**, opens **no ports**, sends **no telemetry**, and
   answers **no approvals** on your behalf.
 - Uses DSH's existing authenticated connection.
+- The sprite sheet is embedded in the bundle, so the plugin issues **no network
+  request at all**.
 - Preferences live in `localStorage` under `dsh-plugin-infj-pet:v1`.
 - Writes only to its own DOM nodes and to one `<style>` element it owns.
 - Does not modify DSH itself, and replaces no official component.
@@ -139,47 +153,87 @@ than throwing into your session.
 Requires Node.js 20 or newer. There are no dependencies to install.
 
 ```sh
-npm run verify      # structural checks plus 35 behavioural tests
+npm run verify      # structural checks plus 43 tests
 npm test            # the test suite alone
-npm run check       # manifest, patch, locale, artwork-drift and asset checks
-npm run preview     # regenerate preview.html from the shipped assets
+npm run check       # manifest, sheet, icon, bundle-drift and locale checks
+npm run build       # regenerate the index, icons, bundle and offline preview
 ```
 
-The artwork lives in exactly one place, `lib/art.js`. The browser bundle cannot
-import it, so `tools/build-art.mjs` copies a marked region into `lib/client.js`
-verbatim, and `npm run check` **fails** whenever the two copies drift. Edit the
-drawing in `lib/art.js`, then run:
+### How the artwork is wired
 
-```sh
-node tools/build-art.mjs --write    # refresh the bundle region and assets/
-```
-
-`tools/render_preview.py` rasterises the shipped SVGs into a contact sheet for
-reviewing the drawing without launching DSH. It understands only the SVG subset
-this project emits, and it ignores stroke-only shapes, so treat it as a
-geometry check rather than a pixel-exact preview.
-
-### Layout
+The character is one PNG sprite sheet: `assets/sage.png`, 1536×2288, an 8×11
+grid of 192×208 cells. Rows 0–8 are animations, rows 9–10 are sixteen head poses
+for gaze. Nothing about that layout is written down twice:
 
 ```
-lib/art.js         artwork source of truth (geometry only)
-lib/client.js      browser bundle: one lazy-CJS factory, CSS, state machine, UI
+assets/provenance/sage-validation.json   the sheet's own validation report
+        │
+        ├─ tools/build-sage-index.mjs ─→ assets/sage-index.json   frames + gaze cells
+        │                                assets/sage.png.b64      payload for the bundle
+        ├─ tools/build-icons.mjs      ─→ assets/icon.png          plugin-manager icon
+        │                                assets/preview.png       the contact sheet above
+        └─ tools/build-bundle.mjs     ─→ lib/client.js            the shipped bundle
+```
+
+`tools/build-sage-index.mjs` measures the sheet with `tools/png.mjs` — a
+dependency-free PNG reader — and refuses to run if the file's SHA-256 does not
+match the hash recorded in the validation report. That is how the plugin proves
+it is shipping the artwork that was actually validated. The 130 MB generation
+workspace is not published; [PROVENANCE.md](PROVENANCE.md) says what is kept
+instead and why.
+
+### The bundle is generated
+
+`lib/client.js` cannot use ES imports at runtime; the browser module loader
+expects one self-contained lazy-CJS factory. So the bundle is assembled from
+plain-text regions in `lib/src/`:
+
+```
+lib/src/order.json      the concatenation order
+lib/src/header.mjs      bundle header and loader registration
+lib/src/constants.mjs   sizes, traits, dialogue, UI strings
+lib/src/helpers.mjs     clamp/pick/locale/store/viewport utilities
+lib/src/statePlan.mjs   semantic state -> sprite animation, and the timings
+lib/src/artwork.mjs     sheet lookup, gaze maths, frame geometry (templated)
+lib/src/sprite.mjs      motion policy and the frame ticker
+lib/src/behaviour.mjs   pure projection and the transition machine
+lib/src/styles.mjs      the stylesheet and generated keyframes
+lib/src/fallback.mjs    direct-mount path when the slot registry is absent
+lib/src/preferences.mjs persisted preference reader
+lib/src/componentHeader.mjs, companionHead.mjs, companionBody.mjs, panel.mjs
+lib/src/plugin.mjs      the Cordis plugin export
+```
+
+Edit those, then run `npm run bundle`. `tests/bundle.test.mjs` rebuilds the
+bundle and fails when `lib/client.js` disagrees with its sources, so the
+committed file can never drift.
+
+### Other layout
+
+```
 lib/index.js       Host half: read-only turn-boundary listener
 cordis.patch.yml   inserts exactly one plugin row
 locale/            plugin-manager title and description
-assets/            generated SVGs: icon plus one still per pose
-tools/             art generator, checker, preview builders
+assets/            the sheet, its index, the icon, the contact sheet
+assets/provenance/ the validation report the build checks the sheet against
+PROVENANCE.md      what artwork provenance is published, and what is not
+tools/             generators, checker, preview builder, PNG reader
 tests/             Node test-runner suite with a small React harness
 ```
+
+`tools/sage_contact.py` and `tools/sage_measure.py` rasterise the sheet for
+review outside DSH; they need Pillow and are development aids only.
 
 ### Design notes
 
 - **Fail soft.** A missing slot registry falls back to a direct DOM mount; a
   store hook that throws leaves a static but present companion.
-- **Never invent success.** The state machine requires an observed rising edge
-  before a falling edge can celebrate.
-- **One artwork source.** Geometry is generated, not hand-copied, and drift is a
-  test failure.
+- **Never invent success.** The machine requires an observed rising edge before a
+  falling edge can celebrate.
+- **One artwork source.** Frames, gaze cells, the icon and the bundle are all
+  derived from the sheet, and every derivation is re-checked in CI.
+- **Integer pixels only.** Every frame offset and scale factor is a whole number,
+  asserted by a test, because that is what keeps the drawing crisp.
 - **Own your nodes.** No global mutation beyond the plugin's own style element
   and its namespaced storage key.
 
@@ -190,6 +244,9 @@ tests/             Node test-runner suite with a small React harness
 - **Code:** [MIT](LICENSE).
 - **Artwork:** [CC BY-NC-SA 4.0](ASSETS-LICENSE.md) — share and adapt
   non-commercially with attribution; separate from the code license.
+- The character was generated with a built-in image generator from the supplied
+  INFJ reference card; `Sage/README.md` records the pet's provenance and stable
+  id, and `Sage/prompts/` holds the production prompts.
 - No fonts are bundled; all text uses the platform UI font stack.
 - INFJ and *Advocate* / *Counselor* are popular-psychology vocabulary, not a
   clinical instrument. This plugin is decorative, assesses no one, and is

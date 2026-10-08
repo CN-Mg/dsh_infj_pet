@@ -69,6 +69,7 @@ function mount(props = {}, options = {}) {
   const petHarness = new ComponentHarness(primitive, props);
   const bundle = loadBundle({
     harness: petHarness,
+    now: options.now,
     navigatorLanguage: options.navigatorLanguage ?? 'zh-CN',
     reduceMotion: options.reduceMotion
   });
@@ -155,6 +156,11 @@ function stateOf(rendered) {
   return rootElement(rendered.tree).props['data-state'];
 }
 
+/** The rendered sprite element, which is how the character is drawn now. */
+function spriteOf(tree) {
+  return findAll(tree, (node) => node.props && String(node.props.className) === 'infj-sprite').at(0);
+}
+
 function bubbles(tree) {
   return findAll(
     tree,
@@ -218,7 +224,9 @@ test('an unconnected client says so instead of pretending to be idle', () => {
 test('the companion still renders when the store hooks are absent', () => {
   const rendered = mount({});
   assert.equal(stateOf(rendered), 'resting');
-  assert.ok(findAll(rendered.tree, (node) => node.type === 'svg').length >= 1);
+  const sprite = spriteOf(rendered.tree);
+  assert.ok(sprite, 'the sprite element should render');
+  assert.match(String(sprite.props.style.backgroundImage), /^url\("data:image\/png;base64,/);
 });
 
 test('finishing observed work celebrates, and an unseen start does not', () => {
@@ -272,10 +280,7 @@ test('clicking the companion opens a new line of dialogue', () => {
 
   const after = rerender(rendered);
   assert.equal(bubbles(after).length, 1);
-  assert.ok(
-    findAll(after, (node) => node.props && String(node.props.className).includes('infj-wrap')).length === 1,
-    'the artwork should stay mounted through a poke'
-  );
+  assert.ok(spriteOf(after), 'the sprite should stay mounted through a poke');
 });
 
 test('a drag moves the companion instead of opening a bubble', () => {
@@ -389,19 +394,117 @@ test('a host language change relabels a companion that never picked one', () => 
   assert.match(rootElement(rendered.tree).props['aria-label'], /INFJ 贤者/);
 });
 
+test('a long uninterrupted run switches the sage to the walking loop', () => {
+  // Two clocks matter here. The machine measures a haul with Date.now, which a
+  // VM sandbox supplies from its own intrinsics, so the clock is injected. And
+  // the machine only re-evaluates when the projection changes or its own poll
+  // fires, so the test drives that poll too.
+  const clock = { now: 1_000_000 };
+  const stores = createStores();
+  stores.set({ running: ['a'] });
+  const rendered = mount(stores.props(), { now: () => clock.now });
+  assert.equal(rootElement(rendered.tree).props['data-sprite'], 'pondering');
+
+  function advance(ms) {
+    clock.now += ms;
+    rendered.bundle.tick(1);
+    rerender(rendered);
+  }
+
+  // Ten seconds in, it is still an ordinary working session.
+  advance(10_000);
+  assert.equal(stateOf(rendered), 'working');
+  assert.equal(rootElement(rendered.tree).props['data-sprite'], 'pondering');
+
+  // Past the delay it becomes a haul and the sage walks alongside it.
+  advance(12_000);
+  assert.equal(stateOf(rendered), 'running');
+  assert.equal(rootElement(rendered.tree).props['data-sprite'], 'run-right');
+
+  // Once the work stops, the run is over and the usual completion shows.
+  stores.set({ running: [] });
+  advance(100);
+  assert.equal(stateOf(rendered), 'celebrating');
+  assert.equal(rootElement(rendered.tree).props['data-sprite'], 'jump');
+});
+
+test('the frame ticker advances within a state and stops while asleep', () => {
+  const stores = createStores();
+  const props = stores.props();
+  const rendered = mount(props);
+  const first = spriteOf(rendered.tree).props.style.backgroundPosition;
+
+  rendered.bundle.tick(1);
+  const advanced = spriteOf(rendered.petHarness.render(props)).props.style.backgroundPosition;
+  assert.notEqual(advanced, first, 'the idle animation should advance a frame');
+
+  // Reduce-motion must stop the animation outright, not merely slow it.
+  const still = mount(createStores().props(), { reduceMotion: true });
+  const before = spriteOf(still.tree).props.style.backgroundPosition;
+  still.bundle.tick(3);
+  const after = spriteOf(still.petHarness.render(still.props)).props.style.backgroundPosition;
+  assert.equal(after, before, 'no frames should advance when motion is off');
+});
+
 /* ------------------------------------------------------------------ *
  * Artwork integration
  * ------------------------------------------------------------------ */
 
-test('the rendered character carries every animatable group', () => {
+test('the sprite is positioned inside the sheet with integer pixel offsets', () => {
   const rendered = mount({});
-  const ids = new Set();
-  walk(rendered.tree, (node) => {
-    if (node.__el && node.type === 'g' && node.props.id) ids.add(node.props.id);
-  });
-  for (const id of ['head', 'body', 'beard', 'arm-staff', 'staff', 'arm-left', 'brows', 'eyes', 'sparkles', 'zs']) {
-    assert.ok(ids.has(id), `missing group #${id}`);
+  const style = spriteOf(rendered.tree).props.style;
+  // Fractional background offsets are what blur pixel art, so every value the
+  // renderer computes must already be a whole number of pixels.
+  for (const value of [style.width, style.height]) {
+    assert.match(String(value), /^-?\d+px$/, `${value} should be a whole pixel count`);
   }
+  const [sizeW, sizeH] = String(style.backgroundSize).split(' ');
+  const [posX, posY] = String(style.backgroundPosition).split(' ');
+  for (const value of [sizeW, sizeH, posX, posY]) {
+    assert.match(value, /^-?\d+px$/, `${value} should be a whole pixel count`);
+  }
+  // Whatever scale is in use, the sheet must be an exact integer multiple of its
+  // source size — that is the invariant that keeps the pixels square.
+  const sheet = JSON.parse(readFileSync(join(root, 'assets', 'sage-index.json'), 'utf8'));
+  const scaleX = Number.parseInt(sizeW, 10) / sheet.sheetWidth;
+  const scaleY = Number.parseInt(sizeH, 10) / sheet.sheetHeight;
+  assert.ok(Number.isInteger(scaleX) && scaleX >= 1, `sheet width scale ${scaleX} is not an integer`);
+  assert.equal(scaleX, scaleY, 'the sheet must be scaled by the same factor on both axes');
+  const boxWidth = Number.parseInt(String(style.width), 10);
+  assert.equal(boxWidth, (sheet.stage.art.width + 12) * scaleX, 'the box should track the same scale');
+});
+
+test('the drawn frame changes as the session state changes', () => {
+  const stores = createStores();
+  const idle = mount(stores.props());
+  const idlePosition = spriteOf(idle.tree).props.style.backgroundPosition;
+  const idleSprite = rootElement(idle.tree).props['data-sprite'];
+  assert.equal(idleSprite, 'idle');
+
+  stores.set({ running: ['a'] });
+  const busy = mount(stores.props());
+  const busyPosition = spriteOf(busy.tree).props.style.backgroundPosition;
+  assert.equal(rootElement(busy.tree).props['data-sprite'], 'pondering');
+  assert.notEqual(busyPosition, idlePosition, 'a different state should draw a different cell');
+});
+
+test('every frame of a state lies on its own row of the sheet', () => {
+  // Guards the index generator: a bad row would silently draw another animation.
+  const sheet = JSON.parse(readFileSync(join(root, 'assets', 'sage-index.json'), 'utf8'));
+  for (const state of sheet.states) {
+    const rows = new Set(state.frames.map((frame) => frame.y));
+    assert.equal(rows.size, 1, `state ${state.state} spans ${rows.size} rows`);
+    assert.equal([...rows][0], state.row * sheet.cellHeight);
+    const columns = state.frames.map((frame) => frame.x / sheet.cellWidth);
+    assert.deepEqual(
+      columns,
+      [...Array(state.frames.length).keys()],
+      `state ${state.state} frames should be left-aligned columns`
+    );
+  }
+  assert.equal(sheet.directions.length, 16, 'the gaze rows should cover sixteen poses');
+  const angles = sheet.directions.map((direction) => direction.degrees);
+  assert.deepEqual(angles, [...Array(16).keys()].map((index) => index * 22.5));
 });
 
 test('the stylesheet reaches the document exactly once per activation', () => {
@@ -410,8 +513,10 @@ test('the stylesheet reaches the document exactly once per activation', () => {
   const dispose = bundle.exports.apply(first.ctx);
   const styles = bundle.document.head.children.filter((node) => node.tagName === 'STYLE');
   assert.equal(styles.length, 1, 'one stylesheet should be injected');
-  assert.ok(styles[0].textContent.includes('.infj-pet'), 'the stylesheet should carry the pet rules');
-  assert.ok(styles[0].textContent.includes('@keyframes infj-blink'), 'animations should be present');
+  const css = styles[0].textContent;
+  assert.ok(css.includes('.infj-pet'), 'the stylesheet should carry the pet rules');
+  assert.ok(css.includes('image-rendering:pixelated'), 'the sprite must not be smoothed');
+  assert.ok(css.includes('@keyframes infj-anim-run-right'), 'animation keyframes should be generated');
   dispose();
 });
 

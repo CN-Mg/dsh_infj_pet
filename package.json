@@ -12,7 +12,7 @@
     "companion"
   ],
   "packageManager": "pnpm@11.7.0",
-  "icon": "./assets/icon.svg",
+  "icon": "./assets/icon.png",
   "type": "module",
   "license": "MIT",
   "main": "lib/index.js",
@@ -30,15 +30,18 @@
     "locale",
     "cordis.patch.yml",
     "README.md",
+    "PROVENANCE.md",
     "LICENSE",
     "ASSETS-LICENSE.md",
     "CHANGELOG.md"
-  ],
-  "scripts": {
+  ],  "scripts": {
     "check": "node tools/check.mjs",
     "test": "node --test tests/",
     "verify": "node tools/check.mjs && node --test tests/",
-    "art": "node tools/build-art.mjs --write",
+    "sage": "node tools/build-sage-index.mjs",
+    "icons": "node tools/build-icons.mjs",
+    "bundle": "node tools/build-bundle.mjs",
+    "build": "node tools/build-sage-index.mjs && node tools/build-icons.mjs && node tools/build-bundle.mjs && node tools/build-preview.mjs",
     "preview": "node tools/build-preview.mjs"
   },
   "engines": {

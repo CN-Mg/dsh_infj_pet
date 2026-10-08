@@ -247,13 +247,27 @@ export function loadBundle(options = {}) {
   const sandbox = {
     console,
     document,
+    // A sandbox has its own intrinsics, so patching Date on this side would not
+    // reach the bundle. The clock is injected here instead, which lets a test
+    // advance time without waiting for it.
+    Date: options.now ? { now: options.now } : Date,
     setTimeout: (fn) => {
       if (typeof fn === 'function') sandbox.__timeouts.push(fn);
       return sandbox.__timeouts.length;
     },
     clearTimeout: () => {},
-    setInterval: () => 0,
-    clearInterval: () => {},
+    setInterval: (fn, ms) => {
+      if (typeof fn === 'function') {
+        const id = sandbox.__intervals.length + 1;
+        sandbox.__intervals.push({ id, fn, ms });
+        return id;
+      }
+      return 0;
+    },
+    clearInterval: (id) => {
+      const index = sandbox.__intervals.findIndex((entry) => entry.id === id);
+      if (index >= 0) sandbox.__intervals.splice(index, 1);
+    },
     localStorage: {
       store: new Map(),
       getItem(key) {
@@ -268,6 +282,7 @@ export function loadBundle(options = {}) {
     innerHeight: 800,
     navigator: { language: options.navigatorLanguage ?? 'zh-CN' },
     __timeouts: [],
+    __intervals: [],
     window: {
       __ModuleLoader__: {
         load(registration) {
@@ -308,7 +323,20 @@ export function loadBundle(options = {}) {
     requested,
     harness,
     sandbox,
-    document
+    document,
+    /**
+     * Fires the sandbox's timers, so a test can advance the plugin's own clock
+     * without waiting in real time. Only the frame ticker runs on an interval.
+     * @param {number} times how many ticks to deliver
+     */
+    tick(times = 1) {
+      for (let i = 0; i < times; i++) {
+        for (const entry of [...sandbox.__intervals]) entry.fn();
+      }
+    },
+    intervalCount() {
+      return sandbox.__intervals.length;
+    }
   };
 }
 

@@ -1,0 +1,16 @@
+{
+  "pet_id": "pet_6ac7958fa51c8191bc6827eb0881645b",
+  "name": "Sage",
+  "description": "A gentle INFJ sage in green robes, with a white beard and a thoughtful heart.",
+  "is_custom": true,
+  "is_active": false,
+  "active_pet_id": "default",
+  "verified_in_pets": true,
+  "spritesheet": "assets/sage.png",
+  "sha256": "58deaf03132eee98634d101661682c1faf45906186bea30e7aa0f951f32631d1",
+  "artifact_storage": "local workspace; ChatGPT Library tools unavailable",
+  "generation": "built-in imagegen",
+  "quality_report": "assets/provenance/sage-validation.json",
+  "visual_review": "qa/final-visual-review.json",
+  "note": "Provenance copy. The full generation workspace (prompts, frames, QA renders) is not published; see assets/provenance/sage-README.md."
+}
