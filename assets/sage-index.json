@@ -1,6 +1,6 @@
 {
   "sheet": "sage.png",
-  "sha256": "58deaf03132eee98634d101661682c1faf45906186bea30e7aa0f951f32631d1",
+  "sha256": "c62020fa4b634d037e72d9fbad270494e96622603978431c3f7fdadde4a3ecdb",
   "sheetWidth": 1536,
   "sheetHeight": 2288,
   "columns": 8,
@@ -11,10 +11,10 @@
     "width": 192,
     "height": 208,
     "art": {
-      "x": 33,
-      "y": 6,
-      "width": 125,
-      "height": 198
+      "x": 37,
+      "y": 46,
+      "width": 117,
+      "height": 158
     },
     "ground": 204
   },
@@ -218,12 +218,12 @@
       }
     },
     {
-      "state": "jump",
+      "state": "reading",
       "label": {
-        "zh": "跃起",
-        "en": "Leaping"
+        "zh": "阅读",
+        "en": "Reading"
       },
-      "fps": 8,
+      "fps": 5,
       "row": 4,
       "frames": [
         {
@@ -253,10 +253,10 @@
         }
       ],
       "art": {
-        "x": 33,
-        "y": 6,
-        "width": 125,
-        "height": 196
+        "x": 53,
+        "y": 49,
+        "width": 86,
+        "height": 155
       }
     },
     {

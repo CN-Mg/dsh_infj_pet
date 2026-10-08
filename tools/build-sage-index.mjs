@@ -26,13 +26,18 @@ const indexPath = join(root, 'assets', 'sage-index.json');
 // came from is far too large to publish, and the build only needs this report.
 const validationPath = join(root, 'assets', 'provenance', 'sage-validation.json');
 
-/** Row order, fixed by the sheet. A mismatch is a hard failure, not a guess. */
+/**
+ * Row order, fixed by the sheet. A mismatch is a hard failure, not a guess.
+ *
+ * Row 4 kept its engine slot name (`jumping`) in the source sheet, but the
+ * reading revision drew an open book over it, so the plugin calls it what it is.
+ */
 const ROWS = [
   { state: 'idle', label: { zh: '静观', en: 'Observing' }, fps: 4 },
   { state: 'run-right', label: { zh: '向右', en: 'Right' }, fps: 12 },
   { state: 'run-left', label: { zh: '向左', en: 'Left' }, fps: 12 },
   { state: 'wave', label: { zh: '招手', en: 'Greeting' }, fps: 6 },
-  { state: 'jump', label: { zh: '跃起', en: 'Leaping' }, fps: 8 },
+  { state: 'reading', label: { zh: '阅读', en: 'Reading' }, fps: 5 },
   { state: 'failed', label: { zh: '受挫', en: 'Setback' }, fps: 8 },
   { state: 'waiting', label: { zh: '共情', en: 'Empathy' }, fps: 5 },
   { state: 'working', label: { zh: '洞察', en: 'Insight' }, fps: 7 },

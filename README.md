@@ -28,7 +28,7 @@ card.
 | 洞察 Insight | At least one session is working | 先看模式，再看任务 — patterns before tasks |
 | 陪伴 Keeping pace | Work has run for 20s without a break | 理想主义的续航 — idealist stamina |
 | 共情 Empathy | A session is waiting on your answer | 先接住情绪 — feelings first |
-| 笃定 Resolve | A turn the sage watched just finished | 低调地笃定 — quiet conviction |
+| 阅读 Reading | A turn the sage watched just finished | 低调地笃定 — quiet conviction |
 | 充电 Recharging | Idle past the nap delay | 独处即充电 — the quiet half |
 | 受挫 Setback | A turn ended in an error | 过载时向内自责 — overload turns inward |
 
@@ -41,12 +41,30 @@ Around that core:
 - **Idle glances** — while resting, the sage looks around using the sheet's
   sixteen drawn head poses.
 - **Keeps pace** — after twenty seconds of uninterrupted work it starts walking,
-  then celebrates or slumps when the run ends.
+  and when the run ends it sits down with an open book.
 - Follows DSH's language, light/dark theme, and reduce-motion preference.
 - No build step to install, no runtime dependencies, no network calls, no model
   calls.
 
 This is an **in-window** companion, not an operating-system desktop overlay.
+
+### Words borrowed from 史铁生 (Shi Tiesheng)
+
+Several of the reading lines are his, and the sage is careful to say so: a
+quoted line renders its attribution directly under the text, in a smaller line,
+never as if the sage had written it.
+
+| Line | Source |
+|---|---|
+| 如果我进来，走进你独处的时间……我只是来给你的窗上装好玻璃，冬天的风就要来了。 | 史铁生 — supplied by the project owner; publication not yet identified |
+| 死是一件不必急于求成的事。 | 史铁生《我与地坛》 |
+| 太阳，他每时每刻都是夕阳也都是旭日。 | 史铁生《我与地坛》 |
+| 我常觉得这中间有着宿命的味道。 | 史铁生《我与地坛》 |
+
+Where a line could not be verified against a published source, this project says
+so rather than presenting a guess as a quotation — the first row above is
+recorded as unverified for exactly that reason. Titles are referenced for the
+remaining states; no passage is reproduced beyond the short lines listed here.
 
 ---
 

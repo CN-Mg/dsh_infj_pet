@@ -1,8 +1,7 @@
 {
   "ok": true,
   "file": "assets/sage.png",
-  "encoded_bytes": 1564801,
-  "sha256": "58deaf03132eee98634d101661682c1faf45906186bea30e7aa0f951f32631d1",
+  "sha256": "c62020fa4b634d037e72d9fbad270494e96622603978431c3f7fdadde4a3ecdb",
   "format": "PNG",
   "mode": "RGBA",
   "columns": 8,
@@ -307,7 +306,7 @@
       "row": 4,
       "column": 0,
       "used": true,
-      "nontransparent_pixels": 8631,
+      "nontransparent_pixels": 8645,
       "opaque_chroma_key_pixels": 0,
       "chroma_fringe_pixels": 0
     },
@@ -316,7 +315,7 @@
       "row": 4,
       "column": 1,
       "used": true,
-      "nontransparent_pixels": 9126,
+      "nontransparent_pixels": 8658,
       "opaque_chroma_key_pixels": 0,
       "chroma_fringe_pixels": 0
     },
@@ -325,7 +324,7 @@
       "row": 4,
       "column": 2,
       "used": true,
-      "nontransparent_pixels": 8956,
+      "nontransparent_pixels": 8840,
       "opaque_chroma_key_pixels": 0,
       "chroma_fringe_pixels": 0
     },
@@ -334,7 +333,7 @@
       "row": 4,
       "column": 3,
       "used": true,
-      "nontransparent_pixels": 9085,
+      "nontransparent_pixels": 8676,
       "opaque_chroma_key_pixels": 0,
       "chroma_fringe_pixels": 0
     },
@@ -343,7 +342,7 @@
       "row": 4,
       "column": 4,
       "used": true,
-      "nontransparent_pixels": 8558,
+      "nontransparent_pixels": 8646,
       "opaque_chroma_key_pixels": 0,
       "chroma_fringe_pixels": 0
     },

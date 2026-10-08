@@ -7,10 +7,11 @@
   "active_pet_id": "default",
   "verified_in_pets": true,
   "spritesheet": "assets/sage.png",
-  "sha256": "58deaf03132eee98634d101661682c1faf45906186bea30e7aa0f951f32631d1",
+  "sha256": "c62020fa4b634d037e72d9fbad270494e96622603978431c3f7fdadde4a3ecdb",
   "artifact_storage": "local workspace; ChatGPT Library tools unavailable",
   "generation": "built-in imagegen",
   "quality_report": "assets/provenance/sage-validation.json",
   "visual_review": "qa/final-visual-review.json",
-  "note": "Provenance copy. The full generation workspace (prompts, frames, QA renders) is not published; see assets/provenance/sage-README.md."
+  "note": "Provenance copy. The full generation workspace (prompts, frames, QA renders) is not published; see assets/provenance/sage-README.md.",
+  "revision": "reading: row 4 (engine slot jumping) redrawn as the sage holding an open book"
 }

@@ -3,6 +3,30 @@
 All notable changes to this plugin are documented here. This project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.2
+
+**The reading revision**
+
+- The leap is gone. When a watched turn finishes, the sage now sits down with an
+  open book: steady stance, eye movement, a short blink and a page turn. The
+  `celebrating` state is renamed `reading` throughout — the state, its timing
+  setting and its internal flag — because that is what actually happens now.
+- The animation is a sheet revision, not new code: row 4, the engine's `jumping`
+  slot, was redrawn. A pixel comparison in the build verifies the other ten rows
+  are unchanged, and the new sheet's SHA-256 is checked against the value
+  recorded in its change audit.
+
+**Quoted lines**
+
+- Reading lines are now quotations, attributed in the interface beneath the text
+  they belong to, in a smaller and quieter line. A quoted line is never
+  presented as the sage's own.
+- Only lines that could be checked against a published source are presented as
+  quotations; one supplied line is recorded as unpublished rather than silently
+  attributed. See the quotation table in the README.
+- The bubble grew a source row and the stylesheet a quoted-line variant, so a
+  longer line wraps left-aligned instead of sitting centred like a quip.
+
 ## 1.0.1
 
 First published release. `1.0.0` was consumed by npm's staged-publish pipeline —

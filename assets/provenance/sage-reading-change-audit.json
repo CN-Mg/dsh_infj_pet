@@ -1,0 +1,22 @@
+{
+  "changed_row": 4,
+  "requested_action": "reading",
+  "engine_slot_name": "jumping",
+  "required_frame_count": 5,
+  "preserved_rows": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "source_sha256": "3efc8fa70db42c226b3ac1baebd07dc3323f0cf697f6bf503b08552de9654963",
+  "final_sha256": "c62020fa4b634d037e72d9fbad270494e96622603978431c3f7fdadde4a3ecdb",
+  "semantic_override": "User explicitly requested reading in place of jump; the supported quality CLI minimum lift is zero for this revision. No vertical lift is expected.",
+  "all_other_rgba_pixels_unchanged": true
+}

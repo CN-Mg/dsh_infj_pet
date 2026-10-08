@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-infj-pet",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "INFJ Sage — a pixel-art Advocate/Counselor companion that lives in your DSH window and reflects what your agents are doing.",
   "keywords": [
     "dsh",

@@ -161,11 +161,40 @@ function spriteOf(tree) {
   return findAll(tree, (node) => node.props && String(node.props.className) === 'infj-sprite').at(0);
 }
 
+/**
+ * The speech bubbles, matched exactly.
+ *
+ * A substring match would also catch the bubble's own inner spans, which is how
+ * a "one bubble" assertion can suddenly see two elements.
+ */
 function bubbles(tree) {
   return findAll(
     tree,
-    (node) => node.props && typeof node.props.className === 'string' && node.props.className.includes('infj-bubble')
+    (node) => node.props && /^infj-bubble(\s|$)/.test(String(node.props.className ?? ''))
   );
+}
+
+/**
+ * The spoken text of a bubble, without its attribution.
+ *
+ * A quoted line carries a source line beneath it; that is a citation, not
+ * something the sage said, so tests about dialogue read only the text span.
+ */
+function bubbleText(bubble) {
+  const text = findAll(
+    bubble,
+    (node) => node.props && String(node.props.className ?? '').includes('infj-bubble-text')
+  ).at(0);
+  return textOf(text ?? bubble);
+}
+
+/** The attribution line of a bubble, if it has one. */
+function bubbleSource(bubble) {
+  const source = findAll(
+    bubble,
+    (node) => node.props && String(node.props.className ?? '').includes('infj-bubble-source')
+  ).at(0);
+  return source ? textOf(source) : null;
 }
 
 /** Opens the settings panel the same way a right-click would. */
@@ -229,7 +258,7 @@ test('the companion still renders when the store hooks are absent', () => {
   assert.match(String(sprite.props.style.backgroundImage), /^url\("data:image\/png;base64,/);
 });
 
-test('finishing observed work celebrates, and an unseen start does not', () => {
+test('finishing observed work starts a reading, and an unseen start does not', () => {
   const stores = createStores();
   stores.set({ running: ['a'] });
   const rendered = mount(stores.props());
@@ -238,7 +267,7 @@ test('finishing observed work celebrates, and an unseen start does not', () => {
   // Falling edge: the turn the companion watched is over.
   stores.set({ running: [] });
   rerender(rendered);
-  assert.equal(stateOf(rendered), 'celebrating');
+  assert.equal(stateOf(rendered), 'reading');
 
   // A client that loads into an already-idle host never claims a win.
   const fresh = mount(createStores().props());
@@ -254,8 +283,28 @@ test('the companion introduces itself with one line on first sight', () => {
   const rendered = mount(stores.props());
   const shown = bubbles(rendered.tree);
   assert.equal(shown.length, 1, 'exactly one greeting bubble');
-  const line = textOf(shown[0]);
-  assert.ok(line.length > 0 && line.length < 40, `line looks wrong: ${line}`);
+  const line = bubbleText(shown[0]);
+  assert.ok(line.length > 0 && line.length < 60, `line looks wrong: ${line}`);
+});
+
+test('a quoted line carries its attribution', () => {
+  const stores = createStores();
+  stores.set({ running: ['a'] });
+  const rendered = mount(stores.props());
+
+  // Finish the watched turn, which puts the sage into a reading.
+  stores.set({ running: [] });
+  rerender(rendered);
+  assert.equal(stateOf(rendered), 'reading');
+
+  const shown = bubbles(rendered.tree);
+  assert.equal(shown.length, 1, 'the reading should raise one bubble');
+  const text = bubbleText(shown[0]);
+  const source = bubbleSource(shown[0]);
+  assert.ok(text.length > 0, 'the quoted line needs text');
+  // Borrowed words are never presented as the sage's own.
+  assert.ok(source && source.length > 0, `a quoted line must name its source, got: ${source}`);
+  assert.match(source, /史铁生/);
 });
 
 test('clicking the companion opens a new line of dialogue', () => {
@@ -421,11 +470,11 @@ test('a long uninterrupted run switches the sage to the walking loop', () => {
   assert.equal(stateOf(rendered), 'running');
   assert.equal(rootElement(rendered.tree).props['data-sprite'], 'run-right');
 
-  // Once the work stops, the run is over and the usual completion shows.
+  // Once the work stops, the run is over and the sage sits down to read.
   stores.set({ running: [] });
   advance(100);
-  assert.equal(stateOf(rendered), 'celebrating');
-  assert.equal(rootElement(rendered.tree).props['data-sprite'], 'jump');
+  assert.equal(stateOf(rendered), 'reading');
+  assert.equal(rootElement(rendered.tree).props['data-sprite'], 'reading');
 });
 
 test('the frame ticker advances within a state and stops while asleep', () => {

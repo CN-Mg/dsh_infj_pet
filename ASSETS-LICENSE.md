@@ -8,9 +8,13 @@ The sources, prompts and quality reports are kept in `Sage/`; `Sage/README.md`
 records the pet's stable id and provenance.
 
 `assets/sage.png` is the sprite sheet, copied unmodified from
-`Sage/final/spritesheet-extended.png` (SHA-256
-`58deaf03132eee98634d101661682c1faf45906186bea30e7aa0f951f32631d1`, as recorded
-in `Sage/pet-record.json`). Everything else in `assets/` is derived from it:
+`Sage/updates/reading/final/spritesheet-reading.png` (SHA-256
+`c62020fa4b634d037e72d9fbad270494e96622603978431c3f7fdadde4a3ecdb`). It is the
+original sheet with one revision: row 4, the engine's `jumping` slot, was redrawn
+as the sage standing with an open book. A pixel comparison confirms the other ten
+rows are byte-identical to the original.
+
+Everything else in `assets/` is derived from it:
 
 | File | Derived how |
 |---|---|
@@ -18,11 +22,20 @@ in `Sage/pet-record.json`). Everything else in `assets/` is derived from it:
 | `sage.png.b64` | the same bytes, base64, for embedding in the bundle |
 | `icon.png` | head crop of the resting frame, 3× nearest-neighbour |
 | `preview.png` | one frame per animation, on a flat backdrop |
+| `provenance/` | the sheet's validation report, change audit and generation notes |
 
 **The artwork is not covered by the MIT code license.** It is released under
 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/): share and
 adapt it for non-commercial use with attribution, under the same license.
 Commercial use needs the copyright holder's permission.
+
+## Quoted text
+
+Some reading lines are short quotations from **史铁生 (Shi Tiesheng)**, each
+attributed in the interface under the line it belongs to. They are brief,
+individually attributed, and used in a non-commercial companion; the project
+claims no rights in them, and no passage is reproduced beyond those short lines.
+See the quotation table in the README for the exact lines and their sources.
 
 Attribution form:
 

@@ -27,7 +27,7 @@ const NOTES = {
   'run-right': 'A long uninterrupted run: the sage walks alongside it.',
   'run-left': 'In the sheet but unused — the sage keeps to its corner.',
   wave: 'Greeting, kept for a future poke reaction.',
-  jump: 'Celebrating: played once when watched work completes.',
+  reading: 'Reading: sits down with an open book when watched work completes.',
   failed: 'Error — a turn ended badly.',
   waiting: 'Waiting — a session needs your answer.',
   working: 'Working — at least one session is busy.',

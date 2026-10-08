@@ -179,16 +179,29 @@ export function findAll(tree, predicate) {
   return found;
 }
 
-/** Concatenated text content of a rendered tree. */
+/**
+ * Concatenated text content of a rendered tree.
+ *
+ * Recursive on purpose: text nested inside wrapper elements (a span inside a
+ * bubble, say) is still that element's text, and a shallow version silently
+ * drops it.
+ */
 export function textOf(tree) {
   let text = '';
-  walk(tree, (node) => {
-    if (typeof node === 'string' || typeof node === 'number') text += String(node);
-    else if (node.children) {
-      for (const child of node.children) {
-        if (typeof child === 'string' || typeof child === 'number') text += String(child);
-      }
+  const visit = (node) => {
+    if (node === null || node === undefined || typeof node === 'boolean') return;
+    if (typeof node === 'string' || typeof node === 'number') {
+      text += String(node);
+      return;
     }
+    if (Array.isArray(node)) {
+      node.forEach(visit);
+      return;
+    }
+    (node.children ?? []).forEach(visit);
+  };
+  walk(tree, (node) => {
+    if (node && node.children) node.children.forEach(visit);
   });
   return text;
 }
