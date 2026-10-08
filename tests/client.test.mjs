@@ -419,6 +419,18 @@ test('the stylesheet reaches the document exactly once per activation', () => {
  * Package contents
  * ------------------------------------------------------------------ */
 
+test('the manifest declares the runtime deps the bundle shares', () => {
+  const manifest = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
+  const inject = manifest.dsh.client.inject;
+  // `dsh.client.inject` is the load-order contract for shared modules; the
+  // bundle's own `inject` is the Cordis service list. They are different things
+  // and both must stay populated.
+  assert.equal(manifest.dsh.client.platform, 'web');
+  for (const required of ['@deepseek-ai/dsh-client-ui-slots', '@deepseek-ai/dsh-client-ui-renderer']) {
+    assert.ok(inject.includes(required), `dsh.client.inject should name ${required}`);
+  }
+});
+
 test('the packaged assets referenced by the manifest exist', () => {
   const manifest = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
   for (const relative of Object.values(manifest.exports)) {
