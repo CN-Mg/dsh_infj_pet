@@ -653,6 +653,55 @@ test('the sprite is positioned inside the sheet with integer pixel offsets', () 
   assert.equal(boxHeight - spriteHeight, groundGap, 'the box adds exactly the ground gap below the sprite');
 });
 
+test('every frame of the sheet is drawn fully inside its element', () => {
+  // The element frames the artwork, so the background offset has to account for
+  // where the artwork sits inside its cell. Subtracting only the frame origin
+  // draws every frame art.x too far right, and the excess is cropped away — which
+  // is exactly how the character lost half of itself at 2x.
+  const sheet = JSON.parse(readFileSync(join(root, 'assets', 'sage-index.json'), 'utf8'));
+  const scale = 2;
+  const elementWidth = sheet.stage.art.width * scale;
+  const elementHeight = sheet.stage.art.height * scale;
+
+  const parse = (value) => Number.parseFloat(String(value));
+  let checked = 0;
+
+  for (const state of sheet.states) {
+    for (const frame of state.frames) {
+      // What the renderer computes for this frame.
+      const offsetX = -Math.round((frame.x + sheet.stage.art.x) * scale);
+      const offsetY = -Math.round((frame.y + sheet.stage.art.y) * scale);
+      // The artwork this frame contributes, in scaled sheet pixels.
+      const artLeft = (frame.x + sheet.stage.art.x) * scale;
+      const artTop = (frame.y + sheet.stage.art.y) * scale;
+
+      const onScreenLeft = artLeft + offsetX;
+      const onScreenTop = artTop + offsetY;
+      checked += 1;
+
+      assert.ok(
+        onScreenLeft >= -0.5,
+        `${state.state} frame ${frame.column} is drawn ${onScreenLeft}px left of its element`
+      );
+      assert.ok(
+        onScreenTop >= -0.5,
+        `${state.state} frame ${frame.column} is drawn ${onScreenTop}px above its element`
+      );
+      // And the element must be big enough for the whole artwork.
+      assert.ok(
+        onScreenLeft + elementWidth <= elementWidth + 0.5,
+        `${state.state} frame ${frame.column} overflows its element by ${onScreenLeft}px`
+      );
+      assert.ok(
+        elementWidth >= sheet.stage.art.width * scale,
+        'the element must be at least the artwork wide'
+      );
+    }
+  }
+  assert.ok(checked > 40, `expected to check every frame, only saw ${checked}`);
+  void parse;
+});
+
 test('the drawn frame changes as the session state changes', () => {
   const stores = createStores();
   const idle = mount(stores.props());

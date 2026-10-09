@@ -3,6 +3,25 @@
 All notable changes to this plugin are documented here. This project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.9
+
+**Fix: the character was drawn cropped**
+
+The element frames the artwork, but the background offset subtracted only the
+frame origin and not where the artwork sits inside its cell. Every frame was
+therefore drawn `art.x` too far right — 37 source pixels, 74 at 2× — and the
+excess fell outside the element. At the default size roughly half the character
+was cut off.
+
+The bug had been there since the sheet was adopted. The original 12 px margin on
+the element absorbed exactly that much of it, so it read as a slightly off-centre
+character rather than a broken one; removing the margin in 1.0.5 to fix the
+alignment exposed it.
+
+A test now checks every frame of every animation against the element that draws
+it, so a frame that would be cropped fails the suite rather than reaching a
+release.
+
 ## 1.0.8
 
 - The default resting place is right-anchored again, 96px from the right and 40px
