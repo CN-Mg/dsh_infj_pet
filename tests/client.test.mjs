@@ -359,25 +359,26 @@ test('a drag moves the companion instead of opening a bubble', () => {
   const props = stores.props();
   const rendered = mount(props);
   const root = rootElement(rendered.tree);
-  // An un-dragged companion is placed by the stylesheet, so it carries the
-  // default inset rather than a recorded pixel position.
-  assert.equal(root.props.style.left, '24px', 'an un-dragged pet hangs on the default anchor');
-  assert.equal(root.props.style.right, undefined, 'the default anchor is a corner, not a right offset');
+  // An un-dragged companion is placed by the stylesheet: right-anchored, because
+  // the companion is positioned against the viewport and cannot see the shell's
+  // sidebar. It carries no recorded pixel position yet.
+  assert.equal(root.props.style.right, '96px', 'an un-dragged pet hangs on the default anchor');
+  assert.equal(root.props.style.left, undefined, 'the default anchor is not a pixel position');
 
   root.props.onPointerDown({
     button: 0,
     pointerId: 7,
-    clientX: 100,
-    clientY: 100,
+    clientX: 1000,
+    clientY: 700,
     currentTarget: { setPointerCapture() {} }
   });
-  root.props.onPointerMove({ pointerId: 7, clientX: 260, clientY: 220 });
-  root.props.onPointerUp({ pointerId: 7, clientX: 260, clientY: 220, currentTarget: { releasePointerCapture() {} } });
+  root.props.onPointerMove({ pointerId: 7, clientX: 700, clientY: 640 });
+  root.props.onPointerUp({ pointerId: 7, clientX: 700, clientY: 640, currentTarget: { releasePointerCapture() {} } });
 
   const moved = rootElement(rerender(rendered));
   // After a real drag the position is explicit, so the stylesheet default is
   // replaced by a recorded pixel position. Where it lands does not matter here —
-  // the drag may snap back to a corner — only that it is now recorded.
+  // the drag may snap back to an edge — only that it is now recorded.
   assert.match(String(moved.props.style.left), /^\d+px$/);
   assert.match(String(moved.props.style.top), /^\d+px$/);
   assert.equal(moved.props.style.right, undefined, 'a recorded position never uses the right offset');
@@ -502,19 +503,29 @@ test('a position saved under an older layout is discarded once', () => {
   // arranging their own desktop. It also means a corrected default would never
   // reach anyone who had ever dragged the sage, so the saved position records the
   // layout it belongs to, and a stale one is ignored.
-  const stale = mountWithSaved({ x: 900, y: 500, layoutVersion: 1 });
-  const staleRoot = rootElement(stale.tree);
-  assert.equal(staleRoot.props.style.left, '24px', 'a stale position falls back to the default anchor');
-  assert.equal(staleRoot.props.style.top, '24px');
+  //
+  // The current version is read from the source rather than written here, so
+  // bumping it does not silently break this test into passing for the wrong
+  // reason.
+  const layoutVersion = Number(
+    readFileSync(join(root, 'lib', 'src', 'constants.mjs'), 'utf8').match(/var LAYOUT_VERSION = (\d+);/)[1]
+  );
+  assert.ok(Number.isInteger(layoutVersion), 'the layout version should be readable from the source');
 
-  const current = mountWithSaved({ x: 900, y: 500, layoutVersion: 2 });
+  const stale = mountWithSaved({ x: 900, y: 500, layoutVersion: layoutVersion - 1 });
+  const staleRoot = rootElement(stale.tree);
+  assert.equal(staleRoot.props.style.right, '96px', 'a stale position falls back to the default anchor');
+  assert.equal(staleRoot.props.style.left, undefined, 'the default anchor is not a pixel position');
+
+  const current = mountWithSaved({ x: 900, y: 500, layoutVersion });
   const currentRoot = rootElement(current.tree);
   assert.equal(currentRoot.props.style.left, '900px', 'a current position is honoured');
   assert.equal(currentRoot.props.style.top, '500px');
+  assert.equal(currentRoot.props.style.right, undefined, 'a recorded position never uses the default inset');
 
   // With no version recorded at all, the position is treated as stale too.
   const unversioned = mountWithSaved({ x: 900, y: 500 });
-  assert.equal(rootElement(unversioned.tree).props.style.left, '24px');
+  assert.equal(rootElement(unversioned.tree).props.style.right, '96px');
 });
 
 test('dragging the sage makes it run, facing the way it is carried', () => {
@@ -524,32 +535,32 @@ test('dragging the sage makes it run, facing the way it is carried', () => {
   const root = rootElement(rendered.tree);
   assert.equal(root.props['data-sprite'], 'idle', 'a still sage is not running');
 
-  // The companion rests in the top-left corner, so the probe moves right and
-  // downward: dragging away from a corner is what gives it somewhere to go.
+  // The companion rests right-anchored, so the probe pulls it inward first:
+  // dragging away from a corner is what gives it somewhere to go.
   const pointerId = 3;
   root.props.onPointerDown({
     button: 0,
     pointerId,
-    clientX: 200,
-    clientY: 200,
+    clientX: 1000,
+    clientY: 700,
     currentTarget: { setPointerCapture() {} }
   });
 
-  root.props.onPointerMove({ pointerId, clientX: 500, clientY: 400 });
+  root.props.onPointerMove({ pointerId, clientX: 700, clientY: 700 });
   let moved = rootElement(rerender(rendered));
-  assert.equal(moved.props['data-sprite'], 'run-right', 'carried inward means facing right');
+  assert.equal(moved.props['data-sprite'], 'run-left', 'carried inward means facing left');
   assert.equal(moved.props['data-state'], 'carried');
 
   // Carried back the other way, still well inside the window, so the facing
   // reverses rather than hitting a wall.
-  root.props.onPointerMove({ pointerId, clientX: 300, clientY: 400 });
+  root.props.onPointerMove({ pointerId, clientX: 900, clientY: 700 });
   moved = rootElement(rerender(rendered));
-  assert.equal(moved.props['data-sprite'], 'run-left', 'carried outward means facing left');
+  assert.equal(moved.props['data-sprite'], 'run-right', 'carried outward means facing right');
 
   // Letting go stops the running immediately.
   root.props.onPointerUp({
     pointerId,
-    clientX: 300,
+    clientX: 900,
     clientY: 700,
     currentTarget: { releasePointerCapture() {} }
   });

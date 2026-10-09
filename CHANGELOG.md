@@ -3,6 +3,18 @@
 All notable changes to this plugin are documented here. This project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.8
+
+- The default resting place is right-anchored again, 96px from the right and 40px
+  up from the bottom. 1.0.7's top-left corner put the sage under the shell's left
+  sidebar, which is about 264px wide, so only its right-hand pixels showed.
+- The reason is worth recording: the companion is positioned against the
+  **viewport**, so it cannot see the shell's layout. A left inset lands under the
+  sidebar and a top inset under the window's title strip; the right edge is the
+  one side that is always clear.
+- The layout version moved to 3, so the corrected default reaches anyone who had
+  already dragged the sage out of the 1.0.7 corner.
+
 ## 1.0.7
 
 - The sage rests in the **top-left** corner. It floats above the shell, so it
