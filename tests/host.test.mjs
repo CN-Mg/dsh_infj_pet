@@ -31,11 +31,30 @@ function turnEnd(seq, kind) {
   return { type: 'turn/end', seq, data: { reason: { kind } } };
 }
 
-test('the Host half declares an optional dependency and a name', async () => {
+test('the Host half declares a name and no inject gate', async () => {
   const module = await import('../lib/index.js');
   assert.equal(module.name, 'infjPet');
   assert.equal(typeof module.apply, 'function');
-  assert.deepEqual(module.inject, { optional: ['agents'] });
+  // An `inject` entry makes Cordis hold the plugin as pending until that service
+  // is provided, so this must stay absent: a name here would stop the whole
+  // plugin, browser half included, from ever activating.
+  assert.equal(module.inject, undefined, 'the Host half must not declare an inject gate');
+});
+
+test('the Host half activates even when the agents registry is missing', () => {
+  const { ctx, recorded } = createHost();
+  // `ctx.get` lives on the Cordis context; a service that is absent is reported
+  // by returning undefined, not by the method going away.
+  ctx.get = () => undefined;
+  apply(ctx);
+  assert.ok(recorded.provided.has('infjPet'), 'activation must not depend on agents');
+  const listener = recorded.listeners.find((entry) => entry.event === 'session/event');
+  assert.ok(listener, 'the listener should still be registered');
+  // A boundary still records; only the identity hint is left off.
+  listener.handler({ id: 's1' }, { type: 'turn/start', seq: 0 });
+  const service = recorded.provided.get('infjPet');
+  assert.equal(service.summary().starts, 1);
+  assert.equal(service.last().isSubagent, undefined, 'identity stays unknown without a registry');
 });
 
 test('applying the Host half provides one service and listens globally', () => {

@@ -167,8 +167,12 @@ contract:
 - injected shares: `slots`, `sessions`, `connection`, `locale`
 - only `react` and `react-dom/client` are required from the platform module table
 
-The Host half declares no required service and registers one optional listener,
-so a Host-side change degrades the companion rather than failing the plugin.
+The Host half declares **no `inject`**, on purpose. A Cordis `inject` entry names a
+service the plugin waits for, and the entry stays pending until that service is
+provided — so an `inject` that never resolves stops the whole plugin, browser half
+included, from ever activating. The optional agents registry is read with
+`ctx.get('agents')` instead, which returns `undefined` when it is missing and
+costs only the coarse `isSubagent` hint.
 
 DSH is evolving quickly. If a future release changes the slot or store contract,
 the sage is written to fail quietly: it falls back to a non-reactive pose rather

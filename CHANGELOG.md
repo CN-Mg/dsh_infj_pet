@@ -3,6 +3,40 @@
 All notable changes to this plugin are documented here. This project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.4
+
+**Fix: the plugin never activated**
+
+`1.0.3` shipped a Host half that could not start. In Cordis an `inject` entry
+names a service the plugin waits for, and the entry stays pending until that name
+is provided — an object form does not mean "optional". The Host half declared
+`{ optional: ['agents'] }`, which asks for a service literally called `optional`.
+Nothing provides it, so the entry stayed pending forever and the whole plugin,
+browser half included, never loaded. DSH reported it as:
+
+```
+1 entry did not activate infj-pet (dsh-plugin-infj-pet):
+pending (waiting for service: optional)
+```
+
+The `inject` declaration is gone. The optional agents registry is read with
+`ctx.get('agents')` instead, which returns `undefined` when it is absent and
+costs only the coarse `isSubagent` hint on a recorded boundary.
+
+Guards added so this cannot come back:
+
+- a test asserts `inject` is `undefined`, with the reason in the failure path
+- a test asserts the Host half still activates and records a boundary when no
+  agents registry is present
+- the fake Cordis context no longer needs `agents`, because the plugin must not
+  ask for it
+
+**A note on why this was missed.** Forty-six of the forty-seven tests exercised
+the browser half, which was never the part failing. The Host half was tested
+against a fake context — and a fake context does not enforce the `inject` gate,
+because that gate is framework behaviour. A complete stub hid a framework-level
+failure; the new assertions target exactly that blind spot.
+
 ## 1.0.3
 
 **The sage no longer paces about**
