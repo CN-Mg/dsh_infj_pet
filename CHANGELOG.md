@@ -3,6 +3,16 @@
 All notable changes to this plugin are documented here. This project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.6
+
+- The resting position sits further from the right edge. Removing the box's
+  internal slack in 1.0.5 left the sage flush against the window edge, which read
+  as too far right; the corner inset is now wider than the bottom's.
+- The speech bubble is a quarter shorter — 1.875× the character's width instead
+  of 2.5×, so about 219 px small, 439 px medium and 658 px large. The 1.0.5
+  widening overshot; this keeps the comfortable wrap without the long measure.
+- The README is the project owner's revision.
+
 ## 1.0.5
 
 **The character and its speech bubble line up**

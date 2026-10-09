@@ -1,10 +1,10 @@
-# INFJ Sage · 贤者桌宠
+# INFJ Sage · 老绿
 
-**A pixel-art INFJ companion that lives inside your DeepSeek Harness window.**
+**A pixel-art INFJ-A companion that lives inside your DeepSeek Harness window.**
 
 **Just here to accompany Qiangwei.**
 
-一只住在 DSH 窗口里的 INFJ 贤者：陪你专注、等你决定，也陪你安静地打个盹。
+这是绿老头，不是brother：陪你专注、等你决定，也陪你安静地打个盹。
 
 <p align="center">
   <img src="assets/icon.png" width="120" alt="INFJ Sage icon">
@@ -23,35 +23,35 @@ card.
 While you work it sits and reads, turning its pages. It only runs when you pick
 it up.
 
----
+\---
 
 ## What it does
 
-| Pose | When it appears | Trait it expresses |
-|---|---|---|
-| 静观 Observing | Nothing is running | 独处即充电 — recharged alone |
-| 阅读 Reading | At least one session is working, or a watched turn just finished | 先看模式，再看任务 — patterns before tasks |
-| 共情 Empathy | A session is waiting on your answer | 先接住情绪 — feelings first |
-| 充电 Recharging | Idle past the nap delay | 独处即充电 — the quiet half |
-| 受挫 Setback | A turn ended in an error | 过载时向内自责 — overload turns inward |
-| 带我去哪儿 Carried | While you are dragging it | 理想主义的续航 — carried, not chasing |
+|Pose|When it appears|Trait it expresses|
+|-|-|-|
+|静观 Observing|Nothing is running|独处即充电 — recharged alone|
+|阅读 Reading|At least one session is working, or a watched turn just finished|先看模式，再看任务 — patterns before tasks|
+|共情 Empathy|A session is waiting on your answer|先接住情绪 — feelings first|
+|充电 Recharging|Idle past the nap delay|独处即充电 — the quiet half|
+|受挫 Setback|A turn ended in an error|过载时向内自责 — overload turns inward|
+|带我去哪儿 Carried|While you are dragging it|理想主义的续航 — carried, not chasing|
 
 Around that core:
 
-- **Click** the sage and it says something in character.
-- **Drag** it anywhere; it snaps to the edge and remembers where you left it.
-- **It reads while you work** — an open book, eyes following the page, a quiet
-  page turn. It never paces about on its own.
-- **It runs only when carried** — pick it up and it runs in the direction you
-  take it, turning around at the screen edge so it never looks like it is
-  running out of the window.
-- **Right-click** for settings: session scope, size, nap delay, palette, motion,
-  idle glances, auto-tips, position reset, tuck away, and a trait panel.
-- **Idle glances** — while resting, the sage looks around using the sheet's
-  sixteen drawn head poses.
-- Follows DSH's language, light/dark theme, and reduce-motion preference.
-- No build step to install, no runtime dependencies, no network calls, no model
-  calls.
+* **Click** the sage and it says something in character.
+* **Drag** it anywhere; it snaps to the edge and remembers where you left it.
+* **It reads while you work** — an open book, eyes following the page, a quiet
+page turn. It never paces about on its own.
+* **It runs only when carried** — pick it up and it runs in the direction you
+take it, turning around at the screen edge so it never looks like it is
+running out of the window.
+* **Right-click** for settings: session scope, size, nap delay, palette, motion,
+idle glances, auto-tips, position reset, tuck away, and a trait panel.
+* **Idle glances** — while resting, the sage looks around using the sheet's
+sixteen drawn head poses.
+* Follows DSH's language, light/dark theme, and reduce-motion preference.
+* No build step to install, no runtime dependencies, no network calls, no model
+calls.
 
 This is an **in-window** companion, not an operating-system desktop overlay.
 
@@ -62,12 +62,12 @@ line they belong to — the speech bubble cites the book, and this page records 
 full source. They are brief, individually attributed, and used in a
 non-commercial companion; the project claims no rights in them.
 
-| Line | Source |
-|---|---|
-| 如果我进来，走进你独处的时间……我只是来给你的窗上装好玻璃，冬天的风就要来了。 | 《务虚笔记》 — named by the project owner; edition not yet pinned |
-| 死是一件不必急于求成的事。 | 《我与地坛》 |
-| 太阳，他每时每刻都是夕阳也都是旭日。 | 《我与地坛》 |
-| 我常觉得这中间有着宿命的味道。 | 《我与地坛》 |
+|Line|Source|
+|-|-|
+|如果我进来，走进你独处的时间……我只是来给你的窗上装好玻璃，冬天的风就要来了。|《务虚笔记》 — named by the project owner; edition not yet pinned|
+|死是一件不必急于求成的事。|《我与地坛》|
+|太阳，他每时每刻都是夕阳也都是旭日。|《我与地坛》|
+|我常觉得这中间有着宿命的味道。|《我与地坛》|
 
 The sage cites the book, not the author's name: the title is what a reader needs
 to find the passage, and it keeps the attribution to a fact rather than a
@@ -76,11 +76,11 @@ project says so — the first row above is recorded that way rather than being
 presented as confirmed. Titles are referenced for the remaining states; no
 passage is reproduced beyond the short lines listed here.
 
----
+\---
 
 ## Install
 
-### 1. From npm
+### 1\. From npm
 
 Package page: [dsh-plugin-infj-pet on npm](https://www.npmjs.com/package/dsh-plugin-infj-pet).
 
@@ -92,22 +92,22 @@ dsh-plugin-infj-pet
 
 To pin this release, use `dsh-plugin-infj-pet@1.0.1`.
 
-### 2. From GitHub
+### 2\. From GitHub
 
 ```
-github:CN-Mg/dsh_infj_pet
+github:CN-Mg/dsh\_infj\_pet
 ```
 
 Or with a pinned tag:
 
 ```
-github:CN-Mg/dsh_infj_pet#v1.0.1
+github:CN-Mg/dsh\_infj\_pet#v1.0.1
 ```
 
 The committed source already contains the built client bundle, so a Git install
 needs no build step.
 
-### 3. From a local folder
+### 3\. From a local folder
 
 Point the installer at the absolute path of this directory, or pack it first:
 
@@ -120,21 +120,21 @@ may not quit the application, and the browser bundle is only picked up on boot.
 
 To remove it: disable the row on the Plugins page, then uninstall the package.
 
----
+\---
 
 ## Using it
 
-- **Click** — a line of dialogue, different each time.
-- **Drag** — reposition; release near a side and it snaps to that edge.
-- **Right-click** — settings and pose preview.
-- **Keyboard** — `Tab` to the sage, `Enter`/`Space` to poke, `Esc` to close.
-- **Session scope** — *All sessions* counts ordinary sessions on the current
-  Host; *This session* follows only the one you are looking at. Child (subagent)
-  sessions are never counted as your sessions, so a delegated burst does not look
-  like your own work.
-- **Nap delay** — how long the sage stays quiet before it dozes off.
-- **Size** — 1×, 2×, or 3× the sprite's own pixels. Every size is a whole-number
-  multiple, because pixel art resampled at a fractional scale turns to mush.
+* **Click** — a line of dialogue, different each time.
+* **Drag** — reposition; release near a side and it snaps to that edge.
+* **Right-click** — settings and pose preview.
+* **Keyboard** — `Tab` to the sage, `Enter`/`Space` to poke, `Esc` to close.
+* **Session scope** — *All sessions* counts ordinary sessions on the current
+Host; *This session* follows only the one you are looking at. Child (subagent)
+sessions are never counted as your sessions, so a delegated burst does not look
+like your own work.
+* **Nap delay** — how long the sage stays quiet before it dozes off.
+* **Size** — 1×, 2×, or 3× the sprite's own pixels. Every size is a whole-number
+multiple, because pixel art resampled at a fractional scale turns to mush.
 
 ### Completion is never guessed
 
@@ -143,32 +143,32 @@ watched running**. A page that loads into an already-idle Host, a dropped
 connection, or a session that simply disappears never produces a celebration.
 Cancelled and failed turns are not successes.
 
----
+\---
 
 ## Privacy and runtime boundaries
 
-- Reads session **identity and status** only — never message content, tool
-  arguments, or transcripts.
-- Makes **no model calls**, opens **no ports**, sends **no telemetry**, and
-  answers **no approvals** on your behalf.
-- Uses DSH's existing authenticated connection.
-- The sprite sheet is embedded in the bundle, so the plugin issues **no network
-  request at all**.
-- Preferences live in `localStorage` under `dsh-plugin-infj-pet:v1`.
-- Writes only to its own DOM nodes and to one `<style>` element it owns.
-- Does not modify DSH itself, and replaces no official component.
+* Reads session **identity and status** only — never message content, tool
+arguments, or transcripts.
+* Makes **no model calls**, opens **no ports**, sends **no telemetry**, and
+answers **no approvals** on your behalf.
+* Uses DSH's existing authenticated connection.
+* The sprite sheet is embedded in the bundle, so the plugin issues **no network
+request at all**.
+* Preferences live in `localStorage` under `dsh-plugin-infj-pet:v1`.
+* Writes only to its own DOM nodes and to one `<style>` element it owns.
+* Does not modify DSH itself, and replaces no official component.
 
----
+\---
 
 ## Compatibility
 
 Developed against **DSH Desktop 0.2.x** using the documented client plugin
 contract:
 
-- client bundle registered through `window.__ModuleLoader__.load({ id, factory })`
-- one `shell.overlay` slot occupant (`id: infj-pet`, `order: 92`)
-- injected shares: `slots`, `sessions`, `connection`, `locale`
-- only `react` and `react-dom/client` are required from the platform module table
+* client bundle registered through `window.\_\_ModuleLoader\_\_.load({ id, factory })`
+* one `shell.overlay` slot occupant (`id: infj-pet`, `order: 92`)
+* injected shares: `slots`, `sessions`, `connection`, `locale`
+* only `react` and `react-dom/client` are required from the platform module table
 
 The Host half declares **no `inject`**, on purpose. A Cordis `inject` entry names a
 service the plugin waits for, and the entry stays pending until that service is
@@ -181,7 +181,7 @@ DSH is evolving quickly. If a future release changes the slot or store contract,
 the sage is written to fail quietly: it falls back to a non-reactive pose rather
 than throwing into your session.
 
----
+\---
 
 ## Development
 
@@ -256,36 +256,37 @@ tools/             generators, checker, preview builder, PNG reader
 tests/             Node test-runner suite with a small React harness
 ```
 
-`tools/sage_contact.py` and `tools/sage_measure.py` rasterise the sheet for
+`tools/sage\_contact.py` and `tools/sage\_measure.py` rasterise the sheet for
 review outside DSH; they need Pillow and are development aids only.
 
 ### Design notes
 
-- **Fail soft.** A missing slot registry falls back to a direct DOM mount; a
-  store hook that throws leaves a static but present companion.
-- **Never invent success.** The machine requires an observed rising edge before a
-  falling edge can celebrate.
-- **One artwork source.** Frames, gaze cells, the icon and the bundle are all
-  derived from the sheet, and every derivation is re-checked in CI.
-- **Integer pixels only.** Every frame offset and scale factor is a whole number,
-  asserted by a test, because that is what keeps the drawing crisp.
-- **Own your nodes.** No global mutation beyond the plugin's own style element
-  and its namespaced storage key.
+* **Fail soft.** A missing slot registry falls back to a direct DOM mount; a
+store hook that throws leaves a static but present companion.
+* **Never invent success.** The machine requires an observed rising edge before a
+falling edge can celebrate.
+* **One artwork source.** Frames, gaze cells, the icon and the bundle are all
+derived from the sheet, and every derivation is re-checked in CI.
+* **Integer pixels only.** Every frame offset and scale factor is a whole number,
+asserted by a test, because that is what keeps the drawing crisp.
+* **Own your nodes.** No global mutation beyond the plugin's own style element
+and its namespaced storage key.
 
----
+\---
 
 ## Credits and licenses
 
-- **Code:** [MIT](LICENSE).
-- **Artwork:** [CC BY-NC-SA 4.0](ASSETS-LICENSE.md) — share and adapt
-  non-commercially with attribution; separate from the code license.
-- The character was generated with a built-in image generator from the supplied
-  INFJ reference card; `Sage/README.md` records the pet's provenance and stable
-  id, and `Sage/prompts/` holds the production prompts.
-- No fonts are bundled; all text uses the platform UI font stack.
-- INFJ and *Advocate* / *Counselor* are popular-psychology vocabulary, not a
-  clinical instrument. This plugin is decorative, assesses no one, and is
-  affiliated with no personality-assessment publisher.
+* **Code:** [MIT](LICENSE).
+* **Artwork:** [CC BY-NC-SA 4.0](ASSETS-LICENSE.md) — share and adapt
+non-commercially with attribution; separate from the code license.
+* The character was generated with a built-in image generator from the supplied
+INFJ reference card; `Sage/README.md` records the pet's provenance and stable
+id, and `Sage/prompts/` holds the production prompts.
+* No fonts are bundled; all text uses the platform UI font stack.
+* INFJ and *Advocate* / *Counselor* are popular-psychology vocabulary, not a
+clinical instrument. This plugin is decorative, assesses no one, and is
+affiliated with no personality-assessment publisher.
 
 This is a personal project, not an official DeepSeek product. It does not
 represent DeepSeek's views or endorsement.
+
