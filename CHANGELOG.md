@@ -3,6 +3,38 @@
 All notable changes to this plugin are documented here. This project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.5
+
+**The character and its speech bubble line up**
+
+- The box that carries the character was not the size of the character: it
+  reserved a ground gap as height while the sprite pushed itself up by the same
+  amount as a bottom margin. The visible pixels therefore sat above the box's
+  bottom edge, so the sage looked off-centre while the bubble, anchored to the
+  box, sat opposite it. The box is now exactly the artwork, and the ground
+  clearance is padding on the container — the drawing and the box agree, so the
+  speech is centred on the character at every size.
+- The five pixels of horizontal margin that widened the box have gone for the
+  same reason.
+
+**The bubble is sized to the character**
+
+- The bubble was a fixed 250 px at every scale, which crowded a large sage and
+  wasted space on a small one. It is now two and a half times the character's own
+  width: about 292 px small, 585 px medium, 878 px large, still clamped to the
+  viewport so it cannot overflow a narrow window.
+
+**Citations name the book**
+
+- Quotations are attributed by title only — 《务虚笔记》, 《我与地坛》,
+  《病隙碎笔》, 《命若琴弦》 — because the title is what a reader needs in order
+  to find the passage. The author's name no longer appears in the interface; it
+  remains in the licence notice, where attribution belongs.
+- The reading line supplied by the project owner is now attributed to
+  《务虚笔记》, which resolves the source that 1.0.2 had recorded as unidentified.
+  The edition is still unpinned and the README says so rather than implying more
+  certainty than exists.
+
 ## 1.0.4
 
 **Fix: the plugin never activated**

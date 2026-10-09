@@ -302,9 +302,11 @@ test('a quoted line carries its attribution', () => {
   const text = bubbleText(shown[0]);
   const source = bubbleSource(shown[0]);
   assert.ok(text.length > 0, 'the quoted line needs text');
-  // Borrowed words are never presented as the sage's own.
+  // Borrowed words are never presented as the sage's own: the citation names the
+  // book the line comes from.
   assert.ok(source && source.length > 0, `a quoted line must name its source, got: ${source}`);
-  assert.match(source, /史铁生/);
+  assert.match(source, /《.+》/, 'the citation should name a book');
+  assert.doesNotMatch(source, /史铁生/, 'the citation carries the book, not the author');
 });
 
 test('clicking the companion opens a new line of dialogue', () => {
@@ -575,7 +577,21 @@ test('the sprite is positioned inside the sheet with integer pixel offsets', () 
   assert.ok(Number.isInteger(scaleX) && scaleX >= 1, `sheet width scale ${scaleX} is not an integer`);
   assert.equal(scaleX, scaleY, 'the sheet must be scaled by the same factor on both axes');
   const boxWidth = Number.parseInt(String(style.width), 10);
-  assert.equal(boxWidth, (sheet.stage.art.width + 12) * scaleX, 'the box should track the same scale');
+  // The box is exactly the artwork: any slop here would sit between the visible
+  // pixels and the box edge, and the bubble is anchored to the box, so the
+  // character would look offset from its own speech.
+  assert.equal(boxWidth, sheet.stage.art.width * scaleX, 'the box should be the artwork, not the artwork plus margin');
+
+  // The sprite and the box must agree, so the visible pixels fill the box the
+  // bubble is anchored to.
+  const sprite = spriteOf(rendered.tree);
+  assert.equal(String(sprite.props.style.width), boxWidth + 'px', 'the sprite fills the box width');
+  assert.equal(sprite.props.style.marginBottom, undefined, 'the sprite must not carry its own bottom offset');
+  const boxHeight = Number.parseInt(String(style.height), 10);
+  const spriteHeight = Number.parseInt(String(sprite.props.style.height), 10);
+  assert.ok(boxHeight >= spriteHeight, 'the box cannot be shorter than the sprite');
+  const groundGap = (sheet.stage.ground - (sheet.stage.art.y + sheet.stage.art.height)) * scaleX;
+  assert.equal(boxHeight - spriteHeight, groundGap, 'the box adds exactly the ground gap below the sprite');
 });
 
 test('the drawn frame changes as the session state changes', () => {

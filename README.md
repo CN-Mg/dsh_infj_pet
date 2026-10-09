@@ -55,23 +55,26 @@ Around that core:
 
 This is an **in-window** companion, not an operating-system desktop overlay.
 
-### Words borrowed from 史铁生 (Shi Tiesheng)
+### Quoted lines
 
-Several of the reading lines are his, and the sage is careful to say so: a
-quoted line renders its attribution directly under the text, in a smaller line,
-never as if the sage had written it.
+Several reading lines are short quotations, attributed in the interface under the
+line they belong to — the speech bubble cites the book, and this page records the
+full source. They are brief, individually attributed, and used in a
+non-commercial companion; the project claims no rights in them.
 
 | Line | Source |
 |---|---|
-| 如果我进来，走进你独处的时间……我只是来给你的窗上装好玻璃，冬天的风就要来了。 | 史铁生 — supplied by the project owner; publication not yet identified |
-| 死是一件不必急于求成的事。 | 史铁生《我与地坛》 |
-| 太阳，他每时每刻都是夕阳也都是旭日。 | 史铁生《我与地坛》 |
-| 我常觉得这中间有着宿命的味道。 | 史铁生《我与地坛》 |
+| 如果我进来，走进你独处的时间……我只是来给你的窗上装好玻璃，冬天的风就要来了。 | 《务虚笔记》 — named by the project owner; edition not yet pinned |
+| 死是一件不必急于求成的事。 | 《我与地坛》 |
+| 太阳，他每时每刻都是夕阳也都是旭日。 | 《我与地坛》 |
+| 我常觉得这中间有着宿命的味道。 | 《我与地坛》 |
 
-Where a line could not be verified against a published source, this project says
-so rather than presenting a guess as a quotation — the first row above is
-recorded as unverified for exactly that reason. Titles are referenced for the
-remaining states; no passage is reproduced beyond the short lines listed here.
+The sage cites the book, not the author's name: the title is what a reader needs
+to find the passage, and it keeps the attribution to a fact rather than a
+byline. Where a line could not be checked against a published edition, this
+project says so — the first row above is recorded that way rather than being
+presented as confirmed. Titles are referenced for the remaining states; no
+passage is reproduced beyond the short lines listed here.
 
 ---
 
