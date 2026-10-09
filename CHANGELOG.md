@@ -3,6 +3,18 @@
 All notable changes to this plugin are documented here. This project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.7
+
+- The sage rests in the **top-left** corner. It floats above the shell, so it
+  overlaps the sidebar rather than being hidden behind it.
+- A changed default position now reaches people who have dragged the sage before.
+  A remembered position beats the default, which is right while someone is
+  arranging their own desktop — but it also meant a corrected default was never
+  seen. The saved record now carries the layout it belongs to, and a position
+  saved under an older layout is ignored once.
+- Two drag tests were anchored to the old bottom-right start and are rewritten to
+  derive from the viewport, so a future default change will not need them edited.
+
 ## 1.0.6
 
 - The resting position sits further from the right edge. Removing the box's
